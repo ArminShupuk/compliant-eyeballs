@@ -55,21 +55,28 @@ for (const code of ['ENOTFOUND', 'EAI_AGAIN']) contract('Node net.Socket DNS err
   const replacement = await connectTcp({ hostname: 'fixture.test', port: 80, lookup }).catch(error => error);
   for (const key of ['name', 'code', 'message']) assert.equal(replacement[key], native[key]);
 });
-contract('Node net.Socket error API', 'two refusals keep the native aggregate code', async t => {
-  const server = net.createServer();
-  const { port } = await listen(t, server);
-  await new Promise(resolve => server.close(resolve));
-  const addresses = [{ address: '127.0.0.1', family: 4 }, { address: '127.0.0.2', family: 4 }];
-  const native = await new Promise(resolve => net.connect({ host: 'fixture.test', port, autoSelectFamily: true,
+contract('Node net.Socket error API', 'two refusals keep the native aggregate code', { timeout: 5000 }, async t => {
+  // Reserve both real loopbacks before closing them. Unconfigured 127/8 aliases
+  // can stall native connect on macOS instead of refusing immediately.
+  const ipv6 = net.createServer(), ipv4 = net.createServer();
+  const { port } = await listen(t, ipv6, '::1');
+  await listen(t, ipv4, '127.0.0.1', port);
+  await Promise.all([ipv6, ipv4].map(server => new Promise(resolve => server.close(resolve))));
+  const addresses = [{ address: '::1', family: 6 }, { address: '127.0.0.1', family: 4 }];
+  const nativeSocket = net.connect({ host: 'fixture.test', port, autoSelectFamily: true, signal: t.signal,
     lookup: (_name, _options, callback) => callback(null, addresses),
-  }).once('error', resolve));
-  const replacement = await connectTcp({ hostname: 'fixture.test', port, resolver: (_request, update) => {
-    update({ family: 6, addresses: [], complete: true });
-    update({ family: 4, addresses: addresses.map(item => item.address), complete: true });
+  });
+  t.after(() => nativeSocket.destroy());
+  const native = await new Promise(resolve => nativeSocket.once('error', resolve));
+  const replacement = await connectTcp({ hostname: 'fixture.test', port, signal: t.signal, resolver: ({ families }, update) => {
+    for (const family of families) update({ family, addresses: addresses.filter(item => item.family === family).map(item => item.address), complete: true });
   } }).catch(error => error);
+  assert.ok(native instanceof AggregateError);
   assert.equal(native.code, 'ECONNREFUSED');
   assert.equal(replacement.code, native.code);
   assert.ok(replacement instanceof AggregateError);
+  assert.deepEqual(native.errors.map(error => error.address).sort(), addresses.map(item => item.address).sort());
+  assert.deepEqual(replacement.errors.map(error => error.address).sort(), addresses.map(item => item.address).sort());
   assert.deepEqual(replacement.errors.map(error => error.code), native.errors.map(error => error.code));
 });
 contract('Node TLS error API', 'an untrusted issuer matches the native error shape', async t => {
