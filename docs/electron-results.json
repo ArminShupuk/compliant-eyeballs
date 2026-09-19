@@ -1,0 +1,47 @@
+{
+  "date": "2026-09-19T17:45:40.959769+00:00",
+  "platform": "linux",
+  "mode": "ELECTRON_RUN_AS_NODE=1",
+  "results": [
+    {
+      "electron": "41.10.7",
+      "node": "24.18.0",
+      "bundledUndici": "7.28.0",
+      "externalUndici": "8.10.0",
+      "tests": 108,
+      "pass": 108,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "electron": "42.3.0",
+      "node": "24.15.0",
+      "bundledUndici": "7.24.4",
+      "externalUndici": "8.10.0",
+      "tests": 108,
+      "pass": 108,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "electron": "42.5.0",
+      "node": "24.17.0",
+      "bundledUndici": "7.28.0",
+      "externalUndici": "8.10.0",
+      "tests": 108,
+      "pass": 108,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "electron": "44.1.0",
+      "node": "24.19.0",
+      "bundledUndici": "7.29.0",
+      "externalUndici": "8.10.0",
+      "tests": 108,
+      "pass": 108,
+      "fail": 0,
+      "skipped": 0
+    }
+  ]
+}

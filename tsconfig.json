@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "NodeNext", "moduleResolution": "NodeNext",
+    "strict": true, "noUncheckedIndexedAccess": true, "declaration": true,
+    "sourceMap": true, "inlineSources": true, "declarationMap": false, "rootDir": "src", "outDir": "dist/esm",
+    "types": ["node"], "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts"]
+}

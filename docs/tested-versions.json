@@ -1,0 +1,78 @@
+{
+  "checked": "2026-09-19",
+  "nodeMinimum": "20.0.0",
+  "undiciMinimum": "6.0.0",
+  "undiciHttp2Minimum": "8.0.0",
+  "nodeVersions": [
+    "20.0.0",
+    "20.18.1",
+    "22.0.0",
+    "22.12.0",
+    "22.19.0",
+    "24.15.0",
+    "24.17.0",
+    "24.18.0",
+    "24.19.0",
+    "24.21.0"
+  ],
+  "undiciVersions": [
+    {
+      "version": "6.0.0",
+      "module": "undici-600",
+      "minimumNode": "18.0.0"
+    },
+    {
+      "version": "6.21.2",
+      "module": "undici-min",
+      "minimumNode": "18.17.0"
+    },
+    {
+      "version": "6.27.0",
+      "module": "undici-627",
+      "minimumNode": "18.17.0"
+    },
+    {
+      "version": "6.28.0",
+      "module": "undici-628",
+      "minimumNode": "18.17.0"
+    },
+    {
+      "version": "7.26.0",
+      "module": "undici-726",
+      "minimumNode": "20.18.1"
+    },
+    {
+      "version": "7.29.0",
+      "module": "undici-729",
+      "minimumNode": "20.18.1"
+    },
+    {
+      "version": "8.0.0",
+      "module": "undici-800",
+      "minimumNode": "22.19.0"
+    },
+    {
+      "version": "8.10.0",
+      "module": "undici-810",
+      "minimumNode": "22.19.0"
+    }
+  ],
+  "electronVersions": [
+    {
+      "version": "44.1.0",
+      "node": "24.19.0"
+    },
+    {
+      "version": "42.3.0",
+      "node": "24.15.0"
+    },
+    {
+      "version": "41.10.7",
+      "node": "24.18.0"
+    },
+    {
+      "version": "42.5.0",
+      "node": "24.17.0"
+    }
+  ]
+}

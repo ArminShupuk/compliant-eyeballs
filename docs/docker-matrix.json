@@ -1,0 +1,10 @@
+{
+  "cases": [
+    { "id": "node20-debian", "image": "node:20.0.0-bullseye", "node": "20.0.0", "distribution": "Debian bullseye", "libc": "glibc" },
+    { "id": "node22-debian", "image": "node:22.19.0-bookworm-slim", "node": "22.19.0", "distribution": "Debian bookworm", "libc": "glibc" },
+    { "id": "node24-debian", "image": "node:24.21.0-bookworm-slim", "node": "24.21.0", "distribution": "Debian bookworm", "libc": "glibc" },
+    { "id": "node24-alpine", "image": "node:24.21.0-alpine", "node": "24.21.0", "distribution": "Alpine", "libc": "musl" },
+    { "id": "node26-debian", "image": "node:26.9.0-bookworm-slim", "node": "26.9.0", "distribution": "Debian bookworm", "libc": "glibc" },
+    { "id": "node26-alpine", "image": "node:26.9.0-alpine", "node": "26.9.0", "distribution": "Alpine", "libc": "musl" }
+  ]
+}

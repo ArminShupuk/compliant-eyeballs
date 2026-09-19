@@ -1,0 +1,945 @@
+{
+  "package": "compliant-eyeballs@1.0.0",
+  "checked": "2026-09-19T18:16:19.618478+00:00",
+  "platform": "linux/amd64",
+  "pass": true,
+  "setupNote": "The initial Node 20 slim-image build failed before tests because the Debian mirror returned HTTP 404 for OpenSSL. The final case uses the full official Bullseye image with OpenSSL already installed and passed on rerun.",
+  "results": [
+    {
+      "id": "node20-debian",
+      "image": "node:20.0.0-bullseye",
+      "node": "20.0.0",
+      "distribution": "Debian bullseye",
+      "libc": "glibc",
+      "platform": "linux/amd64",
+      "pass": true,
+      "baseImageDigests": [
+        "node@sha256:942fa0013e9adfbde06ad07433bdb0a67cc2ac0d5a3db38f12a9c8f710b41f1c"
+      ],
+      "report": {
+        "package": "compliant-eyeballs@1.0.0",
+        "checked": "2026-09-19T18:10:59.538Z",
+        "platform": "linux",
+        "architecture": "x64",
+        "kernel": "6.18.46-1.qubes.fc41.x86_64",
+        "node": "20.0.0",
+        "coverageRequired": false,
+        "steps": [
+          {
+            "name": "build",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 21066,
+            "log": "build.log"
+          },
+          {
+            "name": "test:public-tree",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 2186,
+            "log": "test-public-tree.log"
+          },
+          {
+            "name": "test:classifications",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 1868,
+            "log": "test-classifications.log"
+          },
+          {
+            "name": "test:matrix",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 133886,
+            "log": "test-matrix.log"
+          },
+          {
+            "name": "test:package",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 29495,
+            "log": "test-package.log"
+          }
+        ],
+        "pass": true,
+        "openssl": "OpenSSL 1.1.1n  15 Mar 2022",
+        "matrix": {
+          "date": "2026-09-19T18:13:38.522Z",
+          "platform": "linux",
+          "nodesNotInstalled": [],
+          "results": [
+            {
+              "node": "20.0.0",
+              "suite": "core",
+              "pass": true
+            },
+            {
+              "node": "20.0.0",
+              "undici": "6.0.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "5.21.0",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "20.0.0",
+              "undici": "6.21.2",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "5.21.0",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "20.0.0",
+              "undici": "6.27.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "5.21.0",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "20.0.0",
+              "undici": "6.28.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "5.21.0",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "20.0.0",
+              "undici": "7.26.0",
+              "excluded": "Undici requires Node >=20.18.1"
+            },
+            {
+              "node": "20.0.0",
+              "undici": "7.29.0",
+              "excluded": "Undici requires Node >=20.18.1"
+            },
+            {
+              "node": "20.0.0",
+              "undici": "8.0.0",
+              "excluded": "Undici requires Node >=22.19.0"
+            },
+            {
+              "node": "20.0.0",
+              "undici": "8.10.0",
+              "excluded": "Undici requires Node >=22.19.0"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "node22-debian",
+      "image": "node:22.19.0-bookworm-slim",
+      "node": "22.19.0",
+      "distribution": "Debian bookworm",
+      "libc": "glibc",
+      "platform": "linux/amd64",
+      "pass": true,
+      "baseImageDigests": [
+        "node@sha256:4a4884e8a44826194dff92ba316264f392056cbe243dcc9fd3551e71cea02b90"
+      ],
+      "report": {
+        "package": "compliant-eyeballs@1.0.0",
+        "checked": "2026-09-19T18:07:52.327Z",
+        "platform": "linux",
+        "architecture": "x64",
+        "kernel": "6.18.46-1.qubes.fc41.x86_64",
+        "node": "22.19.0",
+        "coverageRequired": false,
+        "steps": [
+          {
+            "name": "build",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 40219,
+            "log": "build.log"
+          },
+          {
+            "name": "test:public-tree",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 2379,
+            "log": "test-public-tree.log"
+          },
+          {
+            "name": "test:classifications",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 747,
+            "log": "test-classifications.log"
+          },
+          {
+            "name": "test:matrix",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 26114,
+            "log": "test-matrix.log"
+          },
+          {
+            "name": "test:package",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 22165,
+            "log": "test-package.log"
+          }
+        ],
+        "pass": true,
+        "openssl": "OpenSSL 3.0.20 7 Apr 2026 (Library: OpenSSL 3.0.20 7 Apr 2026)",
+        "matrix": {
+          "date": "2026-09-19T18:09:01.893Z",
+          "platform": "linux",
+          "nodesNotInstalled": [],
+          "results": [
+            {
+              "node": "22.19.0",
+              "suite": "core",
+              "pass": true
+            },
+            {
+              "node": "22.19.0",
+              "undici": "6.0.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "6.21.2",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "22.19.0",
+              "undici": "6.21.2",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "6.21.2",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "22.19.0",
+              "undici": "6.27.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "6.21.2",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "22.19.0",
+              "undici": "6.28.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "6.21.2",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "22.19.0",
+              "undici": "7.26.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "6.21.2",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "22.19.0",
+              "undici": "7.29.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "6.21.2",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "22.19.0",
+              "undici": "8.0.0",
+              "pass": true,
+              "http2": "fixture passed",
+              "bundledUndici": "6.21.2",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            },
+            {
+              "node": "22.19.0",
+              "undici": "8.10.0",
+              "pass": true,
+              "http2": "fixture passed",
+              "bundledUndici": "6.21.2",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "node24-debian",
+      "image": "node:24.21.0-bookworm-slim",
+      "node": "24.21.0",
+      "distribution": "Debian bookworm",
+      "libc": "glibc",
+      "platform": "linux/amd64",
+      "pass": true,
+      "baseImageDigests": [
+        "node@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6"
+      ],
+      "report": {
+        "package": "compliant-eyeballs@1.0.0",
+        "checked": "2026-09-19T18:10:13.336Z",
+        "platform": "linux",
+        "architecture": "x64",
+        "kernel": "6.18.46-1.qubes.fc41.x86_64",
+        "node": "24.21.0",
+        "coverageRequired": true,
+        "steps": [
+          {
+            "name": "build",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 7477,
+            "log": "build.log"
+          },
+          {
+            "name": "test:public-tree",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 411,
+            "log": "test-public-tree.log"
+          },
+          {
+            "name": "test:classifications",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 316,
+            "log": "test-classifications.log"
+          },
+          {
+            "name": "test:matrix",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 19034,
+            "log": "test-matrix.log"
+          },
+          {
+            "name": "test:package",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 27831,
+            "log": "test-package.log"
+          },
+          {
+            "name": "test:coverage",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 11320,
+            "log": "test-coverage.log"
+          }
+        ],
+        "pass": true,
+        "openssl": "OpenSSL 3.0.20 7 Apr 2026 (Library: OpenSSL 3.0.20 7 Apr 2026)",
+        "matrix": {
+          "date": "2026-09-19T18:10:40.568Z",
+          "platform": "linux",
+          "nodesNotInstalled": [],
+          "results": [
+            {
+              "node": "24.21.0",
+              "suite": "core",
+              "pass": true
+            },
+            {
+              "node": "24.21.0",
+              "undici": "6.0.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "6.21.2",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "6.27.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "6.28.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "7.26.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "7.29.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "8.0.0",
+              "pass": true,
+              "http2": "fixture passed",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "8.10.0",
+              "pass": true,
+              "http2": "fixture passed",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            }
+          ]
+        },
+        "coverage": {
+          "node": "24.21.0",
+          "modules": [
+            {
+              "path": "dist/esm/agents.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/config.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/connect.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/errors.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/index.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/race.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/resolver.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/types.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/undici.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "node24-alpine",
+      "image": "node:24.21.0-alpine",
+      "node": "24.21.0",
+      "distribution": "Alpine",
+      "libc": "musl",
+      "platform": "linux/amd64",
+      "pass": true,
+      "baseImageDigests": [
+        "node@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1"
+      ],
+      "report": {
+        "package": "compliant-eyeballs@1.0.0",
+        "checked": "2026-09-19T18:11:52.311Z",
+        "platform": "linux",
+        "architecture": "x64",
+        "kernel": "6.18.46-1.qubes.fc41.x86_64",
+        "node": "24.21.0",
+        "coverageRequired": true,
+        "steps": [
+          {
+            "name": "build",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 14729,
+            "log": "build.log"
+          },
+          {
+            "name": "test:public-tree",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 761,
+            "log": "test-public-tree.log"
+          },
+          {
+            "name": "test:classifications",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 531,
+            "log": "test-classifications.log"
+          },
+          {
+            "name": "test:matrix",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 13864,
+            "log": "test-matrix.log"
+          },
+          {
+            "name": "test:package",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 20582,
+            "log": "test-package.log"
+          },
+          {
+            "name": "test:coverage",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 6312,
+            "log": "test-coverage.log"
+          }
+        ],
+        "pass": true,
+        "openssl": "OpenSSL 3.5.8 25 Aug 2026 (Library: OpenSSL 3.5.8 25 Aug 2026)",
+        "matrix": {
+          "date": "2026-09-19T18:12:22.195Z",
+          "platform": "linux",
+          "nodesNotInstalled": [],
+          "results": [
+            {
+              "node": "24.21.0",
+              "suite": "core",
+              "pass": true
+            },
+            {
+              "node": "24.21.0",
+              "undici": "6.0.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "6.21.2",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "6.27.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "6.28.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "7.26.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "7.29.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "8.0.0",
+              "pass": true,
+              "http2": "fixture passed",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            },
+            {
+              "node": "24.21.0",
+              "undici": "8.10.0",
+              "pass": true,
+              "http2": "fixture passed",
+              "bundledUndici": "7.29.1",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            }
+          ]
+        },
+        "coverage": {
+          "node": "24.21.0",
+          "modules": [
+            {
+              "path": "dist/esm/agents.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/config.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/connect.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/errors.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/index.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/race.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/resolver.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/types.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            },
+            {
+              "path": "dist/esm/undici.js",
+              "lines": 100,
+              "branches": 100,
+              "functions": 100
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "node26-debian",
+      "image": "node:26.9.0-bookworm-slim",
+      "node": "26.9.0",
+      "distribution": "Debian bookworm",
+      "libc": "glibc",
+      "platform": "linux/amd64",
+      "pass": true,
+      "baseImageDigests": [
+        "node@sha256:582460f614631b59b824ac6020533b9bf339c7fdf3a6d7db31abb6b4065f0212"
+      ],
+      "report": {
+        "package": "compliant-eyeballs@1.0.0",
+        "checked": "2026-09-19T18:13:38.766Z",
+        "platform": "linux",
+        "architecture": "x64",
+        "kernel": "6.18.46-1.qubes.fc41.x86_64",
+        "node": "26.9.0",
+        "coverageRequired": false,
+        "steps": [
+          {
+            "name": "build",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 10408,
+            "log": "build.log"
+          },
+          {
+            "name": "test:public-tree",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 922,
+            "log": "test-public-tree.log"
+          },
+          {
+            "name": "test:classifications",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 538,
+            "log": "test-classifications.log"
+          },
+          {
+            "name": "test:matrix",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 15566,
+            "log": "test-matrix.log"
+          },
+          {
+            "name": "test:package",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 14744,
+            "log": "test-package.log"
+          }
+        ],
+        "pass": true,
+        "openssl": "OpenSSL 3.0.20 7 Apr 2026 (Library: OpenSSL 3.0.20 7 Apr 2026)",
+        "matrix": {
+          "date": "2026-09-19T18:14:06.198Z",
+          "platform": "linux",
+          "nodesNotInstalled": [],
+          "results": [
+            {
+              "node": "26.9.0",
+              "suite": "core",
+              "pass": true
+            },
+            {
+              "node": "26.9.0",
+              "undici": "6.0.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "6.21.2",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "6.27.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "6.28.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "7.26.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "7.29.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "8.0.0",
+              "pass": true,
+              "http2": "fixture passed",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "8.10.0",
+              "pass": true,
+              "http2": "fixture passed",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "interoperability asserted"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "node26-alpine",
+      "image": "node:26.9.0-alpine",
+      "node": "26.9.0",
+      "distribution": "Alpine",
+      "libc": "musl",
+      "platform": "linux/amd64",
+      "pass": true,
+      "baseImageDigests": [
+        "node@sha256:dbaa92e5758cbbcf85d65d5403fdb530fe3442cbe8c6dbfb7ef23365450d5070"
+      ],
+      "report": {
+        "package": "compliant-eyeballs@1.0.0",
+        "checked": "2026-09-19T18:14:51.116Z",
+        "platform": "linux",
+        "architecture": "x64",
+        "kernel": "6.18.46-1.qubes.fc41.x86_64",
+        "node": "26.9.0",
+        "coverageRequired": false,
+        "steps": [
+          {
+            "name": "build",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 8806,
+            "log": "build.log"
+          },
+          {
+            "name": "test:public-tree",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 621,
+            "log": "test-public-tree.log"
+          },
+          {
+            "name": "test:classifications",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 403,
+            "log": "test-classifications.log"
+          },
+          {
+            "name": "test:matrix",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 11927,
+            "log": "test-matrix.log"
+          },
+          {
+            "name": "test:package",
+            "pass": true,
+            "exitCode": 0,
+            "elapsedMs": 17788,
+            "log": "test-package.log"
+          }
+        ],
+        "pass": true,
+        "openssl": "OpenSSL 3.5.8 25 Aug 2026 (Library: OpenSSL 3.5.8 25 Aug 2026)",
+        "matrix": {
+          "date": "2026-09-19T18:15:12.868Z",
+          "platform": "linux",
+          "nodesNotInstalled": [],
+          "results": [
+            {
+              "node": "26.9.0",
+              "suite": "core",
+              "pass": true
+            },
+            {
+              "node": "26.9.0",
+              "undici": "6.0.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "6.21.2",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "6.27.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "6.28.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "7.26.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "7.29.0",
+              "pass": true,
+              "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "8.0.0",
+              "pass": true,
+              "http2": "fixture passed",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "interoperability asserted"
+            },
+            {
+              "node": "26.9.0",
+              "undici": "8.10.0",
+              "pass": true,
+              "http2": "fixture passed",
+              "bundledUndici": "8.10.2",
+              "builtinFetch": "interoperability asserted"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

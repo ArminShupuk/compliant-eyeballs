@@ -1,0 +1,12 @@
+import { Agent as Agent6Floor } from 'undici-600';
+import { Agent as Agent6 } from 'undici-min';
+import { Agent as Agent8Floor } from 'undici-800';
+import { Agent as Agent8 } from 'undici-810';
+import { createUndiciConnector } from 'compliant-eyeballs/undici';
+import { createHttpsAgent } from 'compliant-eyeballs/agents';
+const connect = createUndiciConnector({ allowH2: true });
+new Agent6Floor({ connect });
+new Agent6({ connect, allowH2: true });
+new Agent8Floor({ connect, allowH2: true });
+new Agent8({ connect, allowH2: true });
+createHttpsAgent({ keepAlive: true, connection: { connectTimeoutMs: 5000 } });

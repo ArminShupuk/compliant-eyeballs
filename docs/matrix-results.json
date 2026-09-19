@@ -1,0 +1,667 @@
+{
+  "date": "2026-09-19T17:43:51.260Z",
+  "platform": "linux",
+  "nodesNotInstalled": [],
+  "results": [
+    {
+      "node": "20.0.0",
+      "suite": "core",
+      "pass": true
+    },
+    {
+      "node": "20.0.0",
+      "undici": "6.0.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "5.21.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "20.0.0",
+      "undici": "6.21.2",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "5.21.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "20.0.0",
+      "undici": "6.27.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "5.21.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "20.0.0",
+      "undici": "6.28.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "5.21.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "20.0.0",
+      "undici": "7.26.0",
+      "excluded": "Undici requires Node >=20.18.1"
+    },
+    {
+      "node": "20.0.0",
+      "undici": "7.29.0",
+      "excluded": "Undici requires Node >=20.18.1"
+    },
+    {
+      "node": "20.0.0",
+      "undici": "8.0.0",
+      "excluded": "Undici requires Node >=22.19.0"
+    },
+    {
+      "node": "20.0.0",
+      "undici": "8.10.0",
+      "excluded": "Undici requires Node >=22.19.0"
+    },
+    {
+      "node": "20.18.1",
+      "suite": "core",
+      "pass": true
+    },
+    {
+      "node": "20.18.1",
+      "undici": "6.0.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.20.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "20.18.1",
+      "undici": "6.21.2",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.20.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "20.18.1",
+      "undici": "6.27.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.20.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "20.18.1",
+      "undici": "6.28.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.20.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "20.18.1",
+      "undici": "7.26.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.20.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "20.18.1",
+      "undici": "7.29.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.20.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "20.18.1",
+      "undici": "8.0.0",
+      "excluded": "Undici requires Node >=22.19.0"
+    },
+    {
+      "node": "20.18.1",
+      "undici": "8.10.0",
+      "excluded": "Undici requires Node >=22.19.0"
+    },
+    {
+      "node": "22.0.0",
+      "suite": "core",
+      "pass": true
+    },
+    {
+      "node": "22.0.0",
+      "undici": "6.0.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.11.1",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.0.0",
+      "undici": "6.21.2",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.11.1",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.0.0",
+      "undici": "6.27.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.11.1",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.0.0",
+      "undici": "6.28.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.11.1",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.0.0",
+      "undici": "7.26.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.11.1",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.0.0",
+      "undici": "7.29.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.11.1",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.0.0",
+      "undici": "8.0.0",
+      "excluded": "Undici requires Node >=22.19.0"
+    },
+    {
+      "node": "22.0.0",
+      "undici": "8.10.0",
+      "excluded": "Undici requires Node >=22.19.0"
+    },
+    {
+      "node": "22.12.0",
+      "suite": "core",
+      "pass": true
+    },
+    {
+      "node": "22.12.0",
+      "undici": "6.0.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.21.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.12.0",
+      "undici": "6.21.2",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.21.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.12.0",
+      "undici": "6.27.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.21.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.12.0",
+      "undici": "6.28.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.21.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.12.0",
+      "undici": "7.26.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.21.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.12.0",
+      "undici": "7.29.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.21.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.12.0",
+      "undici": "8.0.0",
+      "excluded": "Undici requires Node >=22.19.0"
+    },
+    {
+      "node": "22.12.0",
+      "undici": "8.10.0",
+      "excluded": "Undici requires Node >=22.19.0"
+    },
+    {
+      "node": "22.19.0",
+      "suite": "core",
+      "pass": true
+    },
+    {
+      "node": "22.19.0",
+      "undici": "6.0.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.21.2",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.19.0",
+      "undici": "6.21.2",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.21.2",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.19.0",
+      "undici": "6.27.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.21.2",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.19.0",
+      "undici": "6.28.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.21.2",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.19.0",
+      "undici": "7.26.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.21.2",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.19.0",
+      "undici": "7.29.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "6.21.2",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "22.19.0",
+      "undici": "8.0.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "6.21.2",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "22.19.0",
+      "undici": "8.10.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "6.21.2",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "24.15.0",
+      "suite": "core",
+      "pass": true
+    },
+    {
+      "node": "24.15.0",
+      "undici": "6.0.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.24.4",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.15.0",
+      "undici": "6.21.2",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.24.4",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.15.0",
+      "undici": "6.27.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.24.4",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.15.0",
+      "undici": "6.28.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.24.4",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.15.0",
+      "undici": "7.26.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.24.4",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.15.0",
+      "undici": "7.29.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.24.4",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.15.0",
+      "undici": "8.0.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "7.24.4",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "24.15.0",
+      "undici": "8.10.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "7.24.4",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "24.17.0",
+      "suite": "core",
+      "pass": true
+    },
+    {
+      "node": "24.17.0",
+      "undici": "6.0.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.17.0",
+      "undici": "6.21.2",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.17.0",
+      "undici": "6.27.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.17.0",
+      "undici": "6.28.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.17.0",
+      "undici": "7.26.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.17.0",
+      "undici": "7.29.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.17.0",
+      "undici": "8.0.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "24.17.0",
+      "undici": "8.10.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "24.18.0",
+      "suite": "core",
+      "pass": true
+    },
+    {
+      "node": "24.18.0",
+      "undici": "6.0.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.18.0",
+      "undici": "6.21.2",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.18.0",
+      "undici": "6.27.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.18.0",
+      "undici": "6.28.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.18.0",
+      "undici": "7.26.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.18.0",
+      "undici": "7.29.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.18.0",
+      "undici": "8.0.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "24.18.0",
+      "undici": "8.10.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "7.28.0",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "24.19.0",
+      "suite": "core",
+      "pass": true
+    },
+    {
+      "node": "24.19.0",
+      "undici": "6.0.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.29.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.19.0",
+      "undici": "6.21.2",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.29.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.19.0",
+      "undici": "6.27.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.29.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.19.0",
+      "undici": "6.28.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.29.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.19.0",
+      "undici": "7.26.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.29.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.19.0",
+      "undici": "7.29.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.29.0",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.19.0",
+      "undici": "8.0.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "7.29.0",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "24.19.0",
+      "undici": "8.10.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "7.29.0",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "24.21.0",
+      "suite": "core",
+      "pass": true
+    },
+    {
+      "node": "24.21.0",
+      "undici": "6.0.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.29.1",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.21.0",
+      "undici": "6.21.2",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.29.1",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.21.0",
+      "undici": "6.27.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.29.1",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.21.0",
+      "undici": "6.28.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.29.1",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.21.0",
+      "undici": "7.26.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.29.1",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.21.0",
+      "undici": "7.29.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "7.29.1",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "24.21.0",
+      "undici": "8.0.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "7.29.1",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "24.21.0",
+      "undici": "8.10.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "7.29.1",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    }
+  ]
+}

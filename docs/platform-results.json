@@ -1,0 +1,190 @@
+{
+  "package": "compliant-eyeballs@1.0.0",
+  "checked": "2026-09-19T18:03:09.441Z",
+  "platform": "linux",
+  "architecture": "x64",
+  "kernel": "6.18.46-1.qubes.fc41.x86_64",
+  "node": "24.21.0",
+  "coverageRequired": true,
+  "steps": [
+    {
+      "name": "build",
+      "pass": true,
+      "exitCode": 0,
+      "elapsedMs": 22832,
+      "log": "build.log"
+    },
+    {
+      "name": "test:public-tree",
+      "pass": true,
+      "exitCode": 0,
+      "elapsedMs": 2286,
+      "log": "test-public-tree.log"
+    },
+    {
+      "name": "test:classifications",
+      "pass": true,
+      "exitCode": 0,
+      "elapsedMs": 1130,
+      "log": "test-classifications.log"
+    },
+    {
+      "name": "test:matrix",
+      "pass": true,
+      "exitCode": 0,
+      "elapsedMs": 32500,
+      "log": "test-matrix.log"
+    },
+    {
+      "name": "test:package",
+      "pass": true,
+      "exitCode": 0,
+      "elapsedMs": 43239,
+      "log": "test-package.log"
+    },
+    {
+      "name": "test:coverage",
+      "pass": true,
+      "exitCode": 0,
+      "elapsedMs": 5435,
+      "log": "test-coverage.log"
+    }
+  ],
+  "pass": true,
+  "openssl": "OpenSSL 3.5.7 9 Jun 2026 (Library: OpenSSL 3.5.7 9 Jun 2026)",
+  "matrix": {
+    "date": "2026-09-19T18:04:08.236Z",
+    "platform": "linux",
+    "nodesNotInstalled": [],
+    "results": [
+      {
+        "node": "24.21.0",
+        "suite": "core",
+        "pass": true
+      },
+      {
+        "node": "24.21.0",
+        "undici": "6.0.0",
+        "pass": true,
+        "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+        "bundledUndici": "7.29.1",
+        "builtinFetch": "interoperability asserted"
+      },
+      {
+        "node": "24.21.0",
+        "undici": "6.21.2",
+        "pass": true,
+        "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+        "bundledUndici": "7.29.1",
+        "builtinFetch": "interoperability asserted"
+      },
+      {
+        "node": "24.21.0",
+        "undici": "6.27.0",
+        "pass": true,
+        "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+        "bundledUndici": "7.29.1",
+        "builtinFetch": "interoperability asserted"
+      },
+      {
+        "node": "24.21.0",
+        "undici": "6.28.0",
+        "pass": true,
+        "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+        "bundledUndici": "7.29.1",
+        "builtinFetch": "interoperability asserted"
+      },
+      {
+        "node": "24.21.0",
+        "undici": "7.26.0",
+        "pass": true,
+        "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+        "bundledUndici": "7.29.1",
+        "builtinFetch": "interoperability asserted"
+      },
+      {
+        "node": "24.21.0",
+        "undici": "7.29.0",
+        "pass": true,
+        "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+        "bundledUndici": "7.29.1",
+        "builtinFetch": "interoperability asserted"
+      },
+      {
+        "node": "24.21.0",
+        "undici": "8.0.0",
+        "pass": true,
+        "http2": "fixture passed",
+        "bundledUndici": "7.29.1",
+        "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+      },
+      {
+        "node": "24.21.0",
+        "undici": "8.10.0",
+        "pass": true,
+        "http2": "fixture passed",
+        "bundledUndici": "7.29.1",
+        "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+      }
+    ]
+  },
+  "coverage": {
+    "node": "24.21.0",
+    "modules": [
+      {
+        "path": "dist/esm/agents.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/config.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/connect.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/errors.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/index.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/race.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/resolver.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/types.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/undici.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      }
+    ]
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "checked": "2026-09-19T17:40:56.648Z",
+  "node": "26.9.0",
+  "platform": "linux",
+  "fixture": "loopback listener backlog=1 with two filler connections; accept paused for 650ms (slow) or 8000ms (stalled)",
+  "results": [
+    {
+      "scenario": "stalled-first",
+      "implementation": "node",
+      "attemptTimeoutMs": 250,
+      "deadlineMs": 4000,
+      "events": [
+        {
+          "type": "attempt",
+          "address": "127.0.0.1",
+          "elapsedMs": 253
+        }
+      ],
+      "remote": "127.0.0.1",
+      "success": true,
+      "elapsedMs": 253
+    },
+    {
+      "scenario": "stalled-first",
+      "implementation": "node",
+      "attemptTimeoutMs": 1500,
+      "deadlineMs": 4000,
+      "events": [
+        {
+          "type": "attempt",
+          "address": "127.0.0.1",
+          "elapsedMs": 1502
+        }
+      ],
+      "remote": "127.0.0.1",
+      "success": true,
+      "elapsedMs": 1502
+    },
+    {
+      "scenario": "stalled-first",
+      "implementation": "library",
+      "attemptTimeoutMs": 250,
+      "deadlineMs": 4000,
+      "events": [
+        {
+          "type": "attempt",
+          "address": "127.0.0.2",
+          "elapsedMs": 2
+        },
+        {
+          "type": "attempt",
+          "address": "127.0.0.1",
+          "elapsedMs": 253
+        }
+      ],
+      "remote": "127.0.0.1",
+      "success": true,
+      "elapsedMs": 257
+    },
+    {
+      "scenario": "stalled-first",
+      "implementation": "library",
+      "attemptTimeoutMs": 250,
+      "deadlineMs": 20000,
+      "events": [
+        {
+          "type": "attempt",
+          "address": "127.0.0.2",
+          "elapsedMs": 0
+        },
+        {
+          "type": "attempt",
+          "address": "127.0.0.1",
+          "elapsedMs": 251
+        }
+      ],
+      "remote": "127.0.0.1",
+      "success": true,
+      "elapsedMs": 253
+    },
+    {
+      "scenario": "slow-viable-first",
+      "implementation": "node",
+      "attemptTimeoutMs": 250,
+      "deadlineMs": 4000,
+      "events": [
+        {
+          "type": "attempt",
+          "address": "127.0.0.3",
+          "elapsedMs": 251
+        }
+      ],
+      "success": false,
+      "error": "ETIMEDOUT",
+      "elapsedMs": 252
+    },
+    {
+      "scenario": "slow-viable-first",
+      "implementation": "node",
+      "attemptTimeoutMs": 1500,
+      "deadlineMs": 4000,
+      "events": [],
+      "remote": "127.0.0.2",
+      "success": true,
+      "elapsedMs": 1039
+    },
+    {
+      "scenario": "slow-viable-first",
+      "implementation": "library",
+      "attemptTimeoutMs": 250,
+      "deadlineMs": 4000,
+      "events": [
+        {
+          "type": "attempt",
+          "address": "127.0.0.2",
+          "elapsedMs": 0
+        },
+        {
+          "type": "attempt",
+          "address": "127.0.0.3",
+          "elapsedMs": 251
+        }
+      ],
+      "remote": "127.0.0.2",
+      "success": true,
+      "elapsedMs": 1019
+    },
+    {
+      "scenario": "slow-viable-first",
+      "implementation": "library",
+      "attemptTimeoutMs": 250,
+      "deadlineMs": 20000,
+      "events": [
+        {
+          "type": "attempt",
+          "address": "127.0.0.2",
+          "elapsedMs": 1
+        },
+        {
+          "type": "attempt",
+          "address": "127.0.0.3",
+          "elapsedMs": 251
+        }
+      ],
+      "remote": "127.0.0.2",
+      "success": true,
+      "elapsedMs": 1012
+    }
+  ]
+}

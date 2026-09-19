@@ -1,0 +1,100 @@
+{
+  "name": "compliant-eyeballs",
+  "version": "1.0.0",
+  "description": "Happy Eyeballs connection racing for Node.js: overlapping TCP/TLS, native agents and Undici",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "./dist/cjs/index.js",
+  "types": "./dist/cjs/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "agents": ["dist/cjs/agents.d.ts"],
+      "undici": ["dist/cjs/undici.d.ts"]
+    }
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    },
+    "./agents": {
+      "import": {
+        "types": "./dist/esm/agents.d.ts",
+        "default": "./dist/esm/agents.js"
+      },
+      "require": {
+        "types": "./dist/cjs/agents.d.ts",
+        "default": "./dist/cjs/agents.js"
+      }
+    },
+    "./undici": {
+      "import": {
+        "types": "./dist/esm/undici.d.ts",
+        "default": "./dist/esm/undici.js"
+      },
+      "require": {
+        "types": "./dist/cjs/undici.d.ts",
+        "default": "./dist/cjs/undici.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "docs"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/runtime.test.mjs test/agents.test.mjs test/network.test.mjs test/scheduler.test.mjs test/undici-order.test.mjs",
+    "test:consumers": "node --test fixtures/consumers.test.mjs",
+    "test:package": "node scripts/package-test.mjs",
+    "test:electron": "node scripts/electron-test.mjs",
+    "test:matrix": "node scripts/matrix-test.mjs",
+    "test:undici-minors": "node scripts/undici-minor-test.mjs",
+    "test:classifications": "node scripts/check-test-classification.mjs",
+    "test:coverage": "node scripts/coverage-gate.mjs",
+    "check": "npm run build && npm run test:public-tree && npm run test:classifications && npm test && npm run test:consumers && npm run test:package",
+    "prepack": "npm run build",
+    "test:public-tree": "node scripts/check-public-tree.mjs",
+    "audit:comparators": "node scripts/audit-comparators.mjs",
+    "audit:timeouts": "node scripts/audit-timeouts.mjs",
+    "test:platform": "node scripts/platform-test.mjs",
+    "test:docker": "node scripts/docker-test.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.0",
+    "node-fetch-v2": "npm:node-fetch@2.6.7",
+    "node-fetch-v3": "npm:node-fetch@3.3.2",
+    "typescript": "~5.9.3",
+    "undici": "6.21.2",
+    "undici-600": "npm:undici@6.0.0",
+    "undici-627": "npm:undici@6.27.0",
+    "undici-628": "npm:undici@6.28.0",
+    "undici-726": "npm:undici@7.26.0",
+    "undici-729": "npm:undici@7.29.0",
+    "undici-800": "npm:undici@8.0.0",
+    "undici-810": "npm:undici@8.10.0",
+    "undici-min": "npm:undici@6.21.2",
+    "ws": "^8.18.0"
+  },
+  "keywords": [
+    "happy-eyeballs",
+    "rfc8305",
+    "ipv6",
+    "ipv4",
+    "tcp",
+    "tls",
+    "nodejs",
+    "undici"
+  ]
+}

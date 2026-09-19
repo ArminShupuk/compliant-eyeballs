@@ -1,0 +1,586 @@
+{
+  "checked": "2026-09-19T17:45:51.690Z",
+  "node": "24.21.0",
+  "platform": "linux",
+  "selection": "latest published stable patch per Undici 6.x, 7.x and 8.x minor, plus 6.0.0 and 8.0.0 floors",
+  "selectedVersions": [
+    "6.0.0",
+    "6.0.1",
+    "6.1.0",
+    "6.2.1",
+    "6.3.0",
+    "6.4.0",
+    "6.5.0",
+    "6.6.2",
+    "6.7.1",
+    "6.8.0",
+    "6.9.0",
+    "6.10.2",
+    "6.11.1",
+    "6.12.0",
+    "6.13.0",
+    "6.14.1",
+    "6.15.0",
+    "6.16.1",
+    "6.17.0",
+    "6.18.2",
+    "6.19.8",
+    "6.20.1",
+    "6.21.3",
+    "6.22.0",
+    "6.23.0",
+    "6.24.1",
+    "6.25.0",
+    "6.26.0",
+    "6.27.0",
+    "6.28.1",
+    "7.0.0",
+    "7.1.1",
+    "7.2.3",
+    "7.3.0",
+    "7.4.0",
+    "7.5.0",
+    "7.6.0",
+    "7.7.0",
+    "7.8.0",
+    "7.9.0",
+    "7.10.0",
+    "7.11.0",
+    "7.12.0",
+    "7.13.0",
+    "7.14.0",
+    "7.15.0",
+    "7.16.0",
+    "7.17.0",
+    "7.18.2",
+    "7.19.2",
+    "7.20.0",
+    "7.21.0",
+    "7.22.0",
+    "7.23.0",
+    "7.24.8",
+    "7.25.0",
+    "7.26.0",
+    "7.27.2",
+    "7.28.0",
+    "7.29.1",
+    "8.0.0",
+    "8.0.3",
+    "8.1.0",
+    "8.2.0",
+    "8.3.0",
+    "8.4.1",
+    "8.5.0",
+    "8.6.0",
+    "8.7.0",
+    "8.8.0",
+    "8.9.0",
+    "8.10.2"
+  ],
+  "results": [
+    {
+      "undici": "6.0.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.0.1",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.1.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.2.1",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.3.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.4.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.5.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.6.2",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.7.1",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.8.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.9.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.10.2",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.11.1",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.12.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.13.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.14.1",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.15.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.16.1",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.17.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.18.2",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.19.8",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.20.1",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.21.3",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.22.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.23.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.24.1",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.25.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.26.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.27.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "6.28.1",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.0.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.1.1",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.2.3",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.3.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.4.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.5.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.6.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.7.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.8.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.9.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.10.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.11.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.12.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.13.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.14.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.15.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.16.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.17.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.18.2",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.19.2",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.20.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.21.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.22.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.23.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.24.8",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.25.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.26.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.27.2",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.28.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "7.29.1",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "8.0.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "8.0.0",
+      "protocol": "HTTP/2",
+      "pass": true,
+      "passedTests": 1
+    },
+    {
+      "undici": "8.0.3",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "8.0.3",
+      "protocol": "HTTP/2",
+      "pass": true,
+      "passedTests": 1
+    },
+    {
+      "undici": "8.1.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "8.1.0",
+      "protocol": "HTTP/2",
+      "pass": true,
+      "passedTests": 1
+    },
+    {
+      "undici": "8.2.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "8.2.0",
+      "protocol": "HTTP/2",
+      "pass": true,
+      "passedTests": 1
+    },
+    {
+      "undici": "8.3.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "8.3.0",
+      "protocol": "HTTP/2",
+      "pass": true,
+      "passedTests": 1
+    },
+    {
+      "undici": "8.4.1",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "8.4.1",
+      "protocol": "HTTP/2",
+      "pass": true,
+      "passedTests": 1
+    },
+    {
+      "undici": "8.5.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "8.5.0",
+      "protocol": "HTTP/2",
+      "pass": true,
+      "passedTests": 1
+    },
+    {
+      "undici": "8.6.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "8.6.0",
+      "protocol": "HTTP/2",
+      "pass": true,
+      "passedTests": 1
+    },
+    {
+      "undici": "8.7.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "8.7.0",
+      "protocol": "HTTP/2",
+      "pass": true,
+      "passedTests": 1
+    },
+    {
+      "undici": "8.8.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "8.8.0",
+      "protocol": "HTTP/2",
+      "pass": true,
+      "passedTests": 1
+    },
+    {
+      "undici": "8.9.0",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "8.9.0",
+      "protocol": "HTTP/2",
+      "pass": true,
+      "passedTests": 1
+    },
+    {
+      "undici": "8.10.2",
+      "protocol": "HTTP/1.1 and consumer fixtures",
+      "pass": true,
+      "passedTests": 5
+    },
+    {
+      "undici": "8.10.2",
+      "protocol": "HTTP/2",
+      "pass": true,
+      "passedTests": 1
+    }
+  ]
+}

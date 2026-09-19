@@ -1,0 +1,9 @@
+.git
+.idea
+node_modules
+dist
+*.tgz
+.env
+.env.*
+.npmrc
+npm-debug.log*

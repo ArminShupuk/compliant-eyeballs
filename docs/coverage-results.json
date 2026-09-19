@@ -1,0 +1,59 @@
+{
+  "node": "24.21.0",
+  "modules": [
+    {
+      "path": "dist/esm/agents.js",
+      "lines": 100,
+      "branches": 100,
+      "functions": 100
+    },
+    {
+      "path": "dist/esm/config.js",
+      "lines": 100,
+      "branches": 100,
+      "functions": 100
+    },
+    {
+      "path": "dist/esm/connect.js",
+      "lines": 100,
+      "branches": 100,
+      "functions": 100
+    },
+    {
+      "path": "dist/esm/errors.js",
+      "lines": 100,
+      "branches": 100,
+      "functions": 100
+    },
+    {
+      "path": "dist/esm/index.js",
+      "lines": 100,
+      "branches": 100,
+      "functions": 100
+    },
+    {
+      "path": "dist/esm/race.js",
+      "lines": 100,
+      "branches": 100,
+      "functions": 100
+    },
+    {
+      "path": "dist/esm/resolver.js",
+      "lines": 100,
+      "branches": 100,
+      "functions": 100
+    },
+    {
+      "path": "dist/esm/types.js",
+      "lines": 100,
+      "branches": 100,
+      "functions": 100
+    },
+    {
+      "path": "dist/esm/undici.js",
+      "lines": 100,
+      "branches": 100,
+      "functions": 100
+    }
+  ]
+}

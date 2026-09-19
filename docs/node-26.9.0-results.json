@@ -1,0 +1,76 @@
+{
+  "date": "2026-09-19T17:45:31.981Z",
+  "platform": "linux",
+  "nodesNotInstalled": [],
+  "results": [
+    {
+      "node": "26.9.0",
+      "suite": "core",
+      "pass": true
+    },
+    {
+      "node": "26.9.0",
+      "undici": "6.0.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "8.10.2",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "26.9.0",
+      "undici": "6.21.2",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "8.10.2",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "26.9.0",
+      "undici": "6.27.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "8.10.2",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "26.9.0",
+      "undici": "6.28.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "8.10.2",
+      "builtinFetch": "known incompatible dispatcher generation; rejection and matching external fetch asserted"
+    },
+    {
+      "node": "26.9.0",
+      "undici": "7.26.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "8.10.2",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "26.9.0",
+      "undici": "7.29.0",
+      "pass": true,
+      "http2": "not supported with Undici 6/7; native HTTP/2 tested in core",
+      "bundledUndici": "8.10.2",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "26.9.0",
+      "undici": "8.0.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "8.10.2",
+      "builtinFetch": "interoperability asserted"
+    },
+    {
+      "node": "26.9.0",
+      "undici": "8.10.0",
+      "pass": true,
+      "http2": "fixture passed",
+      "bundledUndici": "8.10.2",
+      "builtinFetch": "interoperability asserted"
+    }
+  ]
+}

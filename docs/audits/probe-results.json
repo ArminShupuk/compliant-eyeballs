@@ -1,0 +1,670 @@
+{
+  "date": "2026-09-19T17:38:49.997Z",
+  "platform": "linux",
+  "binaries": {
+    "curl": "${CURL_BIN}",
+    "installedCurl": "${INSTALLED_CURL_BIN}",
+    "go": "${GO_BIN}",
+    "node": "${NODE_BIN}",
+    "nvmNode": "${NVM_NODE_BIN}",
+    "chrome": "${CHROME_BIN}"
+  },
+  "probes": [
+    {
+      "name": "build-go-probe",
+      "command": [
+        "${GO_BIN}",
+        "build",
+        "-o",
+        "${AUDIT_CACHE}/audit-go",
+        "scripts/audit-go.go"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 546,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "curl-mixed",
+      "command": [
+        "${CURL_BIN}",
+        "--silent",
+        "--show-error",
+        "--noproxy",
+        "*",
+        "--verbose",
+        "--max-time",
+        "2",
+        "--happy-eyeballs-timeout-ms",
+        "50",
+        "--resolve",
+        "mixed.he-audit.test:37763:[::1],127.0.0.1",
+        "--write-out",
+        " remote=%{remote_ip} connect=%{time_connect}",
+        "http://mixed.he-audit.test:37763/"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 32,
+      "stdout": "ready remote=127.0.0.1 connect=0.000710",
+      "stderr": "* [DNS] added mixed.he-audit.test:37763:[::1],127.0.0.1 to cache\n* Hostname mixed.he-audit.test was found in DNS cache\n* Host mixed.he-audit.test:37763 was resolved.\n* IPv6: ::1\n* IPv4: 127.0.0.1\n*   Trying [::1]:37763...\n* connect to ::1 port 37763 from ::1 port 53442 failed: Connection refused\n*   Trying 127.0.0.1:37763...\n* Established connection to mixed.he-audit.test (127.0.0.1 port 37763) from 127.0.0.1 port 42998 \n* using HTTP/1.x\n> GET / HTTP/1.1\r\n> Host: mixed.he-audit.test:37763\r\n> User-Agent: curl/8.22.0\r\n> Accept: */*\r\n> \r\n* Request completely sent off\n< HTTP/1.1 200 OK\r\n< Date: Sat, 19 Sep 2026 17:38:50 GMT\r\n< Connection: keep-alive\r\n< Keep-Alive: timeout=5\r\n< Content-Length: 5\r\n< \r\n{ [5 bytes data]\n* Connection #0 to host mixed.he-audit.test:37763 left intact"
+    },
+    {
+      "name": "curl-installed-mixed",
+      "command": [
+        "${INSTALLED_CURL_BIN}",
+        "--silent",
+        "--show-error",
+        "--noproxy",
+        "*",
+        "--verbose",
+        "--max-time",
+        "2",
+        "--happy-eyeballs-timeout-ms",
+        "50",
+        "--resolve",
+        "mixed.he-audit.test:37763:[::1],127.0.0.1",
+        "--write-out",
+        " remote=%{remote_ip} connect=%{time_connect}",
+        "http://mixed.he-audit.test:37763/"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 20,
+      "stdout": "ready remote=127.0.0.1 connect=0.000263",
+      "stderr": "* Added mixed.he-audit.test:37763:[::1],127.0.0.1 to DNS cache\n* Hostname mixed.he-audit.test was found in DNS cache\n*   Trying [::1]:37763...\n* connect to ::1 port 37763 from ::1 port 53454 failed: Connection refused\n*   Trying 127.0.0.1:37763...\n* Connected to mixed.he-audit.test (127.0.0.1) port 37763\n* using HTTP/1.x\n> GET / HTTP/1.1\r\n> Host: mixed.he-audit.test:37763\r\n> User-Agent: curl/8.14.1\r\n> Accept: */*\r\n> \r\n* Request completely sent off\n< HTTP/1.1 200 OK\r\n< Date: Sat, 19 Sep 2026 17:38:50 GMT\r\n< Connection: keep-alive\r\n< Keep-Alive: timeout=5\r\n< Content-Length: 5\r\n< \r\n{ [5 bytes data]\n* Connection #0 to host mixed.he-audit.test left intact"
+    },
+    {
+      "name": "go-mixed",
+      "command": [
+        "${AUDIT_CACHE}/audit-go",
+        "mixed.he-audit.test",
+        "37763",
+        "33526",
+        "mixed",
+        "2000"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 30,
+      "stdout": "remote=127.0.0.1:37763 elapsed_ms=6",
+      "stderr": "attempt=[::1]:37763 at_ms=5\nattempt=127.0.0.1:37763 at_ms=6"
+    },
+    {
+      "name": "node-mixed",
+      "command": [
+        "${NODE_BIN}",
+        "scripts/audit-node.mjs",
+        "mixed.he-audit.test",
+        "37763",
+        "mixed",
+        "2000"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 201,
+      "stdout": "{\"remote\":\"127.0.0.1\",\"attempted\":[\"::1:37763\",\"127.0.0.1:37763\"],\"elapsedMs\":25}",
+      "stderr": ""
+    },
+    {
+      "name": "node-nvm-mixed",
+      "command": [
+        "${NVM_NODE_BIN}",
+        "scripts/audit-node.mjs",
+        "mixed.he-audit.test",
+        "37763",
+        "mixed",
+        "2000"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 105,
+      "stdout": "{\"remote\":\"127.0.0.1\",\"attempted\":[\"::1:37763\",\"127.0.0.1:37763\"],\"elapsedMs\":19}",
+      "stderr": ""
+    },
+    {
+      "name": "curl-same",
+      "command": [
+        "${CURL_BIN}",
+        "--silent",
+        "--show-error",
+        "--noproxy",
+        "*",
+        "--verbose",
+        "--max-time",
+        "2",
+        "--happy-eyeballs-timeout-ms",
+        "50",
+        "--resolve",
+        "same.he-audit.test:37763:127.0.0.2,127.0.0.1",
+        "--write-out",
+        " remote=%{remote_ip} connect=%{time_connect}",
+        "http://same.he-audit.test:37763/"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 12,
+      "stdout": "ready remote=127.0.0.1 connect=0.000631",
+      "stderr": "* [DNS] added same.he-audit.test:37763:127.0.0.2,127.0.0.1 to cache\n* Hostname same.he-audit.test was found in DNS cache\n* Host same.he-audit.test:37763 was resolved.\n* IPv6: (none)\n* IPv4: 127.0.0.2, 127.0.0.1\n*   Trying 127.0.0.2:37763...\n* connect to 127.0.0.2 port 37763 from 127.0.0.1 port 42944 failed: Connection refused\n*   Trying 127.0.0.1:37763...\n* Established connection to same.he-audit.test (127.0.0.1 port 37763) from 127.0.0.1 port 43052 \n* using HTTP/1.x\n> GET / HTTP/1.1\r\n> Host: same.he-audit.test:37763\r\n> User-Agent: curl/8.22.0\r\n> Accept: */*\r\n> \r\n* Request completely sent off\n< HTTP/1.1 200 OK\r\n< Date: Sat, 19 Sep 2026 17:38:51 GMT\r\n< Connection: keep-alive\r\n< Keep-Alive: timeout=5\r\n< Content-Length: 5\r\n< \r\n{ [5 bytes data]\n* Connection #0 to host same.he-audit.test:37763 left intact"
+    },
+    {
+      "name": "curl-installed-same",
+      "command": [
+        "${INSTALLED_CURL_BIN}",
+        "--silent",
+        "--show-error",
+        "--noproxy",
+        "*",
+        "--verbose",
+        "--max-time",
+        "2",
+        "--happy-eyeballs-timeout-ms",
+        "50",
+        "--resolve",
+        "same.he-audit.test:37763:127.0.0.2,127.0.0.1",
+        "--write-out",
+        " remote=%{remote_ip} connect=%{time_connect}",
+        "http://same.he-audit.test:37763/"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 18,
+      "stdout": "ready remote=127.0.0.1 connect=0.000248",
+      "stderr": "* Added same.he-audit.test:37763:127.0.0.2,127.0.0.1 to DNS cache\n* Hostname same.he-audit.test was found in DNS cache\n*   Trying 127.0.0.2:37763...\n* connect to 127.0.0.2 port 37763 from 127.0.0.1 port 42960 failed: Connection refused\n*   Trying 127.0.0.1:37763...\n* Connected to same.he-audit.test (127.0.0.1) port 37763\n* using HTTP/1.x\n> GET / HTTP/1.1\r\n> Host: same.he-audit.test:37763\r\n> User-Agent: curl/8.14.1\r\n> Accept: */*\r\n> \r\n* Request completely sent off\n< HTTP/1.1 200 OK\r\n< Date: Sat, 19 Sep 2026 17:38:51 GMT\r\n< Connection: keep-alive\r\n< Keep-Alive: timeout=5\r\n< Content-Length: 5\r\n< \r\n{ [5 bytes data]\n* Connection #0 to host same.he-audit.test left intact"
+    },
+    {
+      "name": "go-same",
+      "command": [
+        "${AUDIT_CACHE}/audit-go",
+        "same.he-audit.test",
+        "37763",
+        "33526",
+        "same",
+        "2000"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 11,
+      "stdout": "remote=127.0.0.1:37763 elapsed_ms=4",
+      "stderr": "attempt=127.0.0.2:37763 at_ms=3\nattempt=127.0.0.1:37763 at_ms=3"
+    },
+    {
+      "name": "node-same",
+      "command": [
+        "${NODE_BIN}",
+        "scripts/audit-node.mjs",
+        "same.he-audit.test",
+        "37763",
+        "same",
+        "2000"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 93,
+      "stdout": "{\"remote\":\"127.0.0.1\",\"attempted\":[\"127.0.0.2:37763\",\"127.0.0.1:37763\"],\"elapsedMs\":17}",
+      "stderr": ""
+    },
+    {
+      "name": "node-nvm-same",
+      "command": [
+        "${NVM_NODE_BIN}",
+        "scripts/audit-node.mjs",
+        "same.he-audit.test",
+        "37763",
+        "same",
+        "2000"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 97,
+      "stdout": "{\"remote\":\"127.0.0.1\",\"attempted\":[\"127.0.0.2:37763\",\"127.0.0.1:37763\"],\"elapsedMs\":13}",
+      "stderr": ""
+    },
+    {
+      "name": "curl-late6",
+      "command": [
+        "${CURL_BIN}",
+        "--silent",
+        "--show-error",
+        "--noproxy",
+        "*",
+        "--verbose",
+        "--max-time",
+        "2",
+        "--happy-eyeballs-timeout-ms",
+        "50",
+        "--resolve",
+        "late6.he-audit.test:37763:127.0.0.1,[::1]",
+        "--write-out",
+        " remote=%{remote_ip} connect=%{time_connect}",
+        "http://late6.he-audit.test:37763/"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 8,
+      "stdout": "ready remote=127.0.0.1 connect=0.000374",
+      "stderr": "* [DNS] added late6.he-audit.test:37763:127.0.0.1,[::1] to cache\n* Hostname late6.he-audit.test was found in DNS cache\n* Host late6.he-audit.test:37763 was resolved.\n* IPv6: ::1\n* IPv4: 127.0.0.1\n*   Trying [::1]:37763...\n* connect to ::1 port 37763 from ::1 port 53490 failed: Connection refused\n*   Trying 127.0.0.1:37763...\n* Established connection to late6.he-audit.test (127.0.0.1 port 37763) from 127.0.0.1 port 43084 \n* using HTTP/1.x\n> GET / HTTP/1.1\r\n> Host: late6.he-audit.test:37763\r\n> User-Agent: curl/8.22.0\r\n> Accept: */*\r\n> \r\n* Request completely sent off\n< HTTP/1.1 200 OK\r\n< Date: Sat, 19 Sep 2026 17:38:51 GMT\r\n< Connection: keep-alive\r\n< Keep-Alive: timeout=5\r\n< Content-Length: 5\r\n< \r\n{ [5 bytes data]\n* Connection #0 to host late6.he-audit.test:37763 left intact"
+    },
+    {
+      "name": "curl-installed-late6",
+      "command": [
+        "${INSTALLED_CURL_BIN}",
+        "--silent",
+        "--show-error",
+        "--noproxy",
+        "*",
+        "--verbose",
+        "--max-time",
+        "2",
+        "--happy-eyeballs-timeout-ms",
+        "50",
+        "--resolve",
+        "late6.he-audit.test:37763:127.0.0.1,[::1]",
+        "--write-out",
+        " remote=%{remote_ip} connect=%{time_connect}",
+        "http://late6.he-audit.test:37763/"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 16,
+      "stdout": "ready remote=127.0.0.1 connect=0.000306",
+      "stderr": "* Added late6.he-audit.test:37763:127.0.0.1,[::1] to DNS cache\n* Hostname late6.he-audit.test was found in DNS cache\n*   Trying [::1]:37763...\n* connect to ::1 port 37763 from ::1 port 53496 failed: Connection refused\n*   Trying 127.0.0.1:37763...\n* Connected to late6.he-audit.test (127.0.0.1) port 37763\n* using HTTP/1.x\n> GET / HTTP/1.1\r\n> Host: late6.he-audit.test:37763\r\n> User-Agent: curl/8.14.1\r\n> Accept: */*\r\n> \r\n* Request completely sent off\n< HTTP/1.1 200 OK\r\n< Date: Sat, 19 Sep 2026 17:38:51 GMT\r\n< Connection: keep-alive\r\n< Keep-Alive: timeout=5\r\n< Content-Length: 5\r\n< \r\n{ [5 bytes data]\n* Connection #0 to host late6.he-audit.test left intact"
+    },
+    {
+      "name": "go-late6",
+      "command": [
+        "${AUDIT_CACHE}/audit-go",
+        "late6.he-audit.test",
+        "37763",
+        "33526",
+        "late6",
+        "2000"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 91,
+      "stdout": "remote=127.0.0.1:37763 elapsed_ms=82",
+      "stderr": "attempt=[::1]:37763 at_ms=82\nattempt=127.0.0.1:37763 at_ms=82"
+    },
+    {
+      "name": "node-late6",
+      "command": [
+        "${NODE_BIN}",
+        "scripts/audit-node.mjs",
+        "late6.he-audit.test",
+        "37763",
+        "late6",
+        "2000"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 91,
+      "stdout": "{\"remote\":\"127.0.0.1\",\"attempted\":[\"127.0.0.1:37763\"],\"elapsedMs\":16}",
+      "stderr": ""
+    },
+    {
+      "name": "node-nvm-late6",
+      "command": [
+        "${NVM_NODE_BIN}",
+        "scripts/audit-node.mjs",
+        "late6.he-audit.test",
+        "37763",
+        "late6",
+        "2000"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 85,
+      "stdout": "{\"remote\":\"127.0.0.1\",\"attempted\":[\"127.0.0.1:37763\"],\"elapsedMs\":13}",
+      "stderr": ""
+    },
+    {
+      "name": "curl-tls",
+      "command": [
+        "${CURL_BIN}",
+        "--silent",
+        "--show-error",
+        "--noproxy",
+        "*",
+        "--verbose",
+        "--insecure",
+        "--max-time",
+        "1",
+        "--resolve",
+        "tls.he-audit.test:39947:127.0.0.2,127.0.0.1",
+        "https://tls.he-audit.test:39947/"
+      ],
+      "code": 28,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 1013,
+      "stdout": "",
+      "stderr": "* [DNS] added tls.he-audit.test:39947:127.0.0.2,127.0.0.1 to cache\n* Hostname tls.he-audit.test was found in DNS cache\n* Host tls.he-audit.test:39947 was resolved.\n* IPv6: (none)\n* IPv4: 127.0.0.2, 127.0.0.1\n*   Trying 127.0.0.2:39947...\n* ALPN: curl offers http/1.1\n} [5 bytes data]\n* TLSv1.3 (OUT), TLS handshake, Client hello (1):\n} [1569 bytes data]\n* SSL Trust: peer verification disabled\n* Connection timed out after 1001 milliseconds\n* closing connection #0\ncurl: (28) Connection timed out after 1001 milliseconds"
+    },
+    {
+      "name": "curl-installed-tls",
+      "command": [
+        "${INSTALLED_CURL_BIN}",
+        "--silent",
+        "--show-error",
+        "--noproxy",
+        "*",
+        "--verbose",
+        "--insecure",
+        "--max-time",
+        "1",
+        "--resolve",
+        "tls.he-audit.test:39947:127.0.0.2,127.0.0.1",
+        "https://tls.he-audit.test:39947/"
+      ],
+      "code": 28,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 1021,
+      "stdout": "",
+      "stderr": "* Added tls.he-audit.test:39947:127.0.0.2,127.0.0.1 to DNS cache\n* Hostname tls.he-audit.test was found in DNS cache\n*   Trying 127.0.0.2:39947...\n* ALPN: curl offers h2,http/1.1\n} [5 bytes data]\n* TLSv1.3 (OUT), TLS handshake, Client hello (1):\n} [1572 bytes data]\n* Connection timed out after 1000 milliseconds\n* closing connection #0\ncurl: (28) Connection timed out after 1000 milliseconds"
+    },
+    {
+      "name": "go-tls",
+      "command": [
+        "${AUDIT_CACHE}/audit-go",
+        "tls.he-audit.test",
+        "39947",
+        "33526",
+        "tls",
+        "1000"
+      ],
+      "code": 2,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 1009,
+      "stdout": "error=context deadline exceeded elapsed_ms=1000",
+      "stderr": "attempt=127.0.0.2:39947 at_ms=2"
+    },
+    {
+      "name": "node-tls",
+      "command": [
+        "${NODE_BIN}",
+        "scripts/audit-node.mjs",
+        "tls.he-audit.test",
+        "39947",
+        "tls",
+        "1000"
+      ],
+      "code": 2,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 1090,
+      "stdout": "{\"error\":\"ETIMEDOUT\",\"attempted\":[\"127.0.0.2:39947\"],\"elapsedMs\":1026}",
+      "stderr": ""
+    },
+    {
+      "name": "node-nvm-tls",
+      "command": [
+        "${NVM_NODE_BIN}",
+        "scripts/audit-node.mjs",
+        "tls.he-audit.test",
+        "39947",
+        "tls",
+        "1000"
+      ],
+      "code": 2,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 1068,
+      "stdout": "{\"error\":\"ETIMEDOUT\",\"attempted\":[\"127.0.0.2:39947\"],\"elapsedMs\":1014}",
+      "stderr": ""
+    },
+    {
+      "name": "curl-tls-slow",
+      "command": [
+        "${CURL_BIN}",
+        "--silent",
+        "--show-error",
+        "--noproxy",
+        "*",
+        "--verbose",
+        "--insecure",
+        "--max-time",
+        "2",
+        "--resolve",
+        "slowtls.he-audit.test:41475:127.0.0.2,127.0.0.1",
+        "https://slowtls.he-audit.test:41475/"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 359,
+      "stdout": "ready",
+      "stderr": "S change cipher, Change cipher spec (1):\n{ [1 bytes data]\n* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):\n{ [21 bytes data]\n* TLSv1.3 (IN), TLS handshake, Certificate (11):\n{ [458 bytes data]\n* TLSv1.3 (IN), TLS handshake, CERT verify (15):\n{ [79 bytes data]\n* TLSv1.3 (IN), TLS handshake, Finished (20):\n{ [52 bytes data]\n* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):\n} [1 bytes data]\n* TLSv1.3 (OUT), TLS handshake, Finished (20):\n} [52 bytes data]\n* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / X25519MLKEM768 / id-ecPublicKey\n* ALPN: server accepted http/1.1\n* Server certificate:\n*   subject: CN=localhost\n*   start date: Sep 19 17:38:50 2026 GMT\n*   expire date: Sep 21 17:38:50 2026 GMT\n*   issuer: CN=Ephemeral Test CA\n*   Certificate level 0: Public key type EC/prime256v1 (256/128 Bits/secBits), signed using ecdsa-with-SHA256\n* OpenSSL verify result: 14\n*  SSL certificate verification failed, continuing anyway!\n* Established connection to slowtls.he-audit.test (127.0.0.2 port 41475) from 127.0.0.1 port 52486 \n* using HTTP/1.x\n} [5 bytes data]\n> GET / HTTP/1.1\r\n> Host: slowtls.he-audit.test:41475\r\n> User-Agent: curl/8.22.0\r\n> Accept: */*\r\n> \r\n* Request completely sent off\n{ [5 bytes data]\n* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):\n{ [265 bytes data]\n* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):\n{ [265 bytes data]\n< HTTP/1.1 200 OK\r\n< Date: Sat, 19 Sep 2026 17:38:57 GMT\r\n< Connection: keep-alive\r\n< Keep-Alive: timeout=5\r\n< Content-Length: 5\r\n< \r\n{ [5 bytes data]\n* Connection #0 to host slowtls.he-audit.test:41475 left intact"
+    },
+    {
+      "name": "curl-installed-tls-slow",
+      "command": [
+        "${INSTALLED_CURL_BIN}",
+        "--silent",
+        "--show-error",
+        "--noproxy",
+        "*",
+        "--verbose",
+        "--insecure",
+        "--max-time",
+        "2",
+        "--resolve",
+        "slowtls.he-audit.test:41475:127.0.0.2,127.0.0.1",
+        "https://slowtls.he-audit.test:41475/"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 360,
+      "stdout": "ready",
+      "stderr": "\n{ [1210 bytes data]\n* TLSv1.3 (IN), TLS change cipher, Change cipher spec (1):\n{ [1 bytes data]\n* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):\n{ [21 bytes data]\n* TLSv1.3 (IN), TLS handshake, Certificate (11):\n{ [458 bytes data]\n* TLSv1.3 (IN), TLS handshake, CERT verify (15):\n{ [80 bytes data]\n* TLSv1.3 (IN), TLS handshake, Finished (20):\n{ [52 bytes data]\n* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):\n} [1 bytes data]\n* TLSv1.3 (OUT), TLS handshake, Finished (20):\n} [52 bytes data]\n* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / X25519MLKEM768 / id-ecPublicKey\n* ALPN: server accepted http/1.1\n* Server certificate:\n*  subject: CN=localhost\n*  start date: Sep 19 17:38:50 2026 GMT\n*  expire date: Sep 21 17:38:50 2026 GMT\n*  issuer: CN=Ephemeral Test CA\n*  SSL certificate verify result: unable to get local issuer certificate (20), continuing anyway.\n*   Certificate level 0: Public key type EC/prime256v1 (256/128 Bits/secBits), signed using ecdsa-with-SHA256\n* Connected to slowtls.he-audit.test (127.0.0.2) port 41475\n* using HTTP/1.x\n} [5 bytes data]\n> GET / HTTP/1.1\r\n> Host: slowtls.he-audit.test:41475\r\n> User-Agent: curl/8.14.1\r\n> Accept: */*\r\n> \r\n* Request completely sent off\n{ [5 bytes data]\n* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):\n{ [265 bytes data]\n* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):\n{ [265 bytes data]\n< HTTP/1.1 200 OK\r\n< Date: Sat, 19 Sep 2026 17:38:57 GMT\r\n< Connection: keep-alive\r\n< Keep-Alive: timeout=5\r\n< Content-Length: 5\r\n< \r\n{ [5 bytes data]\n* Connection #0 to host slowtls.he-audit.test left intact"
+    },
+    {
+      "name": "go-tls-slow",
+      "command": [
+        "${AUDIT_CACHE}/audit-go",
+        "slowtls.he-audit.test",
+        "41475",
+        "33526",
+        "tls-slow",
+        "2000"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 314,
+      "stdout": "remote=127.0.0.2:41475 elapsed_ms=307",
+      "stderr": "attempt=127.0.0.2:41475 at_ms=2"
+    },
+    {
+      "name": "node-tls-slow",
+      "command": [
+        "${NODE_BIN}",
+        "scripts/audit-node.mjs",
+        "slowtls.he-audit.test",
+        "41475",
+        "tls-slow",
+        "2000"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 386,
+      "stdout": "{\"remote\":\"127.0.0.2\",\"attempted\":[\"127.0.0.2:41475\"],\"elapsedMs\":321}",
+      "stderr": ""
+    },
+    {
+      "name": "node-nvm-tls-slow",
+      "command": [
+        "${NVM_NODE_BIN}",
+        "scripts/audit-node.mjs",
+        "slowtls.he-audit.test",
+        "41475",
+        "tls-slow",
+        "2000"
+      ],
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "elapsedMs": 376,
+      "stdout": "{\"remote\":\"127.0.0.2\",\"attempted\":[\"127.0.0.2:41475\"],\"elapsedMs\":317}",
+      "stderr": ""
+    },
+    {
+      "name": "chromium-single-success",
+      "command": [
+        "${CHROME_BIN}",
+        "--headless=new",
+        "--no-sandbox",
+        "--disable-gpu",
+        "--disable-background-networking",
+        "--disable-sync",
+        "--disable-extensions",
+        "--disable-component-update",
+        "--no-proxy-server",
+        "--no-first-run",
+        "--no-default-browser-check",
+        "--user-data-dir=${AUDIT_CACHE}/chrome-single-success-AT0wpO",
+        "--host-resolver-rules=MAP chrome.he-audit.test 127.0.0.1, MAP * ~NOTFOUND",
+        "--log-net-log=${AUDIT_CACHE}/chrome-single-success.netlog.json",
+        "--net-log-capture-mode=IncludeSensitive",
+        "--remote-debugging-port=0",
+        "about:blank"
+      ],
+      "code": 0,
+      "timedOut": false,
+      "stderr": "DevTools listening on ws://127.0.0.1:37403/devtools/browser/b0efc866-974b-4892-96ed-510fbcb75eb9\n[241903:241903:0920/003859.882835:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files",
+      "pageText": "ready",
+      "signal": null,
+      "elapsedMs": 1777,
+      "netlog": {
+        "eventCount": 566,
+        "targetConnectAddresses": [
+          "127.0.0.1:37763"
+        ]
+      }
+    },
+    {
+      "name": "chromium-single-failure",
+      "command": [
+        "${CHROME_BIN}",
+        "--headless=new",
+        "--no-sandbox",
+        "--disable-gpu",
+        "--disable-background-networking",
+        "--disable-sync",
+        "--disable-extensions",
+        "--disable-component-update",
+        "--no-proxy-server",
+        "--no-first-run",
+        "--no-default-browser-check",
+        "--user-data-dir=${AUDIT_CACHE}/chrome-single-failure-08W2PQ",
+        "--host-resolver-rules=MAP chrome.he-audit.test 127.0.0.2, MAP * ~NOTFOUND",
+        "--log-net-log=${AUDIT_CACHE}/chrome-single-failure.netlog.json",
+        "--net-log-capture-mode=IncludeSensitive",
+        "--remote-debugging-port=0",
+        "about:blank"
+      ],
+      "code": 0,
+      "timedOut": false,
+      "stderr": "DevTools listening on ws://127.0.0.1:36799/devtools/browser/64cd9b11-a03a-461b-bb3d-ad018afd02af\n[242065:242065:0920/003901.436559:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files",
+      "pageText": "\n  \n    \n      \n        \n        \n          \n            This site can’t be reached\n          \n          \n            chrome.he-audit.test refused to connect.\n          \n\n          \n            \n     ",
+      "signal": null,
+      "elapsedMs": 1781,
+      "netlog": {
+        "eventCount": 503,
+        "targetConnectAddresses": [
+          "127.0.0.2:37763"
+        ]
+      }
+    },
+    {
+      "name": "chromium-localhost-dual",
+      "command": [
+        "${CHROME_BIN}",
+        "--headless=new",
+        "--no-sandbox",
+        "--disable-gpu",
+        "--disable-background-networking",
+        "--disable-sync",
+        "--disable-extensions",
+        "--disable-component-update",
+        "--no-proxy-server",
+        "--no-first-run",
+        "--no-default-browser-check",
+        "--user-data-dir=${AUDIT_CACHE}/chrome-localhost-dual-GbSom2",
+        "--host-resolver-rules=MAP chrome.he-audit.test localhost, MAP * ~NOTFOUND",
+        "--log-net-log=${AUDIT_CACHE}/chrome-localhost-dual.netlog.json",
+        "--net-log-capture-mode=IncludeSensitive",
+        "--remote-debugging-port=0",
+        "about:blank"
+      ],
+      "code": 0,
+      "timedOut": false,
+      "stderr": "DevTools listening on ws://127.0.0.1:44345/devtools/browser/667060c9-805e-4006-832e-bc0d0586d1f6\n[242228:242228:0920/003903.001017:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files",
+      "pageText": "ready",
+      "signal": null,
+      "elapsedMs": 1465,
+      "netlog": {
+        "eventCount": 561,
+        "targetConnectAddresses": [
+          "[::1]:37763",
+          "127.0.0.1:37763"
+        ]
+      }
+    },
+    {
+      "name": "chromium-tls-stall",
+      "command": [
+        "${CHROME_BIN}",
+        "--headless=new",
+        "--no-sandbox",
+        "--disable-gpu",
+        "--disable-background-networking",
+        "--disable-sync",
+        "--disable-extensions",
+        "--disable-component-update",
+        "--no-proxy-server",
+        "--no-first-run",
+        "--no-default-browser-check",
+        "--user-data-dir=${AUDIT_CACHE}/chrome-tls-stall-cz40zD",
+        "--host-resolver-rules=MAP chrome.he-audit.test 127.0.0.2, MAP * ~NOTFOUND",
+        "--log-net-log=${AUDIT_CACHE}/chrome-tls-stall.netlog.json",
+        "--net-log-capture-mode=IncludeSensitive",
+        "--remote-debugging-port=0",
+        "about:blank"
+      ],
+      "code": 0,
+      "timedOut": false,
+      "stderr": "DevTools listening on ws://127.0.0.1:42285/devtools/browser/4ff18a12-bec0-4d25-b65e-63ef18f9e7e2\n[242382:242382:0920/003904.574806:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files",
+      "pageText": "stalled TLS navigation cancelled by Browser.close after 1000ms",
+      "signal": null,
+      "elapsedMs": 2166,
+      "netlog": {
+        "eventCount": 619,
+        "targetConnectAddresses": [
+          "127.0.0.2:39947"
+        ]
+      }
+    }
+  ]
+}
