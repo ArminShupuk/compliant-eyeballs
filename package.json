@@ -1,6 +1,6 @@
 {
   "name": "compliant-eyeballs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Happy Eyeballs connection racing for Node.js: overlapping TCP/TLS, native agents and Undici",
   "license": "MIT",
   "type": "module",

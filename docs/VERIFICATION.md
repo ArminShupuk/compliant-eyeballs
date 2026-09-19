@@ -1,5 +1,8 @@
 # Verification
 
+This record describes the initial 1.0.0 checks. See the [1.0.1 release checks](RELEASE.md)
+for the subsequent error-compatibility regressions and completed native-platform CI.
+
 Checked on Linux on 2026-09-20 (Asia/Bangkok; machine reports use UTC).
 
 | Check | Result |
