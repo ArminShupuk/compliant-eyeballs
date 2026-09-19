@@ -17,11 +17,82 @@ contract('Node net/tls and Undici connector APIs', 'TCP literal and OS localhost
     let data = ''; for await (const chunk of socket) data += chunk; assert.equal(data, 'hello');
   }
 });
+contract('Node net.Socket error API', 'a refused address matches the native error shape', async t => {
+  const server = net.createServer();
+  const { port } = await listen(t, server);
+  await new Promise(resolve => server.close(resolve));
+  const native = await new Promise(resolve => net.connect({ host: '127.0.0.1', port }).once('error', resolve));
+  const replacement = await connectTcp({ hostname: '127.0.0.1', port }).catch(error => error);
+  for (const key of ['name', 'code', 'message', 'address', 'port']) assert.equal(replacement[key], native[key]);
+});
+contract('Node net.Socket abort API', 'signal cancellation matches the native error shape', async () => {
+  const controller = new AbortController(); controller.abort('fixture');
+  const native = await new Promise(resolve => net.connect({ host: '127.0.0.1', port: 9, signal: controller.signal }).once('error', resolve));
+  const replacement = await connectTcp({ hostname: '127.0.0.1', port: 9, signal: controller.signal }).catch(error => error);
+  for (const key of ['name', 'code', 'message', 'cause']) assert.equal(replacement[key], native[key]);
+});
+contract('Node net/tls abort API', 'AbortError reasons remain causes for early and pending cancellation', async () => {
+  const reason = Object.assign(new Error('caller cancellation'), { name: 'AbortError', code: 'ABORT_ERR' });
+  for (const early of [false, true]) for (const secure of [false, true]) {
+    const controller = new AbortController();
+    if (early) controller.abort(reason);
+    const native = new Promise(resolve => (secure ? tls : net).connect({
+      host: 'fixture.test', port: 443, lookup: () => {}, signal: controller.signal,
+    }).once('error', resolve));
+    const replacement = (secure ? connectTls : connectTcp)({
+      hostname: 'fixture.test', port: 443, resolver: () => {}, signal: controller.signal,
+    }).catch(error => error);
+    if (!early) controller.abort(reason);
+    const [expected, actual] = await Promise.all([native, replacement]);
+    for (const key of ['name', 'code', 'message', 'cause']) assert.equal(actual[key], expected[key]);
+    assert.equal(actual.cause, reason);
+    assert.notEqual(actual, reason);
+  }
+});
+for (const code of ['ENOTFOUND', 'EAI_AGAIN']) contract('Node net.Socket DNS error API', `${code} matches the native error shape`, async () => {
+  const lookup = (_hostname, _options, callback) => queueMicrotask(() => callback(Object.assign(new Error(`lookup ${code} fixture.test`), { code })));
+  const native = await new Promise(resolve => net.connect({ host: 'fixture.test', port: 80, lookup }).once('error', resolve));
+  const replacement = await connectTcp({ hostname: 'fixture.test', port: 80, lookup }).catch(error => error);
+  for (const key of ['name', 'code', 'message']) assert.equal(replacement[key], native[key]);
+});
+contract('Node net.Socket error API', 'two refusals keep the native aggregate code', async t => {
+  const server = net.createServer();
+  const { port } = await listen(t, server);
+  await new Promise(resolve => server.close(resolve));
+  const addresses = [{ address: '127.0.0.1', family: 4 }, { address: '127.0.0.2', family: 4 }];
+  const native = await new Promise(resolve => net.connect({ host: 'fixture.test', port, autoSelectFamily: true,
+    lookup: (_name, _options, callback) => callback(null, addresses),
+  }).once('error', resolve));
+  const replacement = await connectTcp({ hostname: 'fixture.test', port, resolver: (_request, update) => {
+    update({ family: 6, addresses: [], complete: true });
+    update({ family: 4, addresses: addresses.map(item => item.address), complete: true });
+  } }).catch(error => error);
+  assert.equal(native.code, 'ECONNREFUSED');
+  assert.equal(replacement.code, native.code);
+  assert.ok(replacement instanceof AggregateError);
+  assert.deepEqual(replacement.errors.map(error => error.code), native.errors.map(error => error.code));
+});
+contract('Node TLS error API', 'an untrusted issuer matches the native error shape', async t => {
+  const c = certs();
+  const server = tls.createServer(c, socket => socket.end());
+  server.on('tlsClientError', () => {});
+  const { port } = await listen(t, server);
+  const native = await new Promise(resolve => tls.connect({ host: '127.0.0.1', port }).once('error', resolve));
+  const replacement = await connectTls({ hostname: '127.0.0.1', port }).catch(error => error);
+  for (const key of ['name', 'code', 'message']) assert.equal(replacement[key], native[key]);
+});
+contract('Node TLS error API', 'a plain server matches the native protocol error', async t => {
+  const { port } = await listen(t, net.createServer(socket => socket.end('HTTP/1.1 200 OK\r\n\r\n')));
+  const native = await new Promise(resolve => tls.connect({ host: '127.0.0.1', port }).once('error', resolve));
+  const replacement = await connectTls({ hostname: '127.0.0.1', port }).catch(error => error);
+  for (const key of ['name', 'code', 'message']) assert.equal(replacement[key], native[key]);
+});
 contract('Node net/tls and Undici connector APIs', 'caller block list is honored even on the minimum Node version', async t => {
   let connections = 0;
   const { port } = await listen(t, net.createServer(() => connections++));
   const blockList = new net.BlockList(); blockList.addAddress('127.0.0.1');
-  await assert.rejects(connectTcp({ hostname: '127.0.0.1', port, blockList }), e => e.errors[0].code === 'ERR_IP_BLOCKED');
+  await assert.rejects(connectTcp({ hostname: '127.0.0.1', port, blockList }),
+    { code: 'ERR_IP_BLOCKED', message: 'IP(127.0.0.1) is blocked by net.BlockList' });
   assert.equal(connections, 0);
 });
 contract('Node net/tls and Undici connector APIs', 'DNS and IP TLS identities, custom trust, SNI and ALPN', async t => {
@@ -38,14 +109,15 @@ contract('Node net/tls and Undici connector APIs', 'IP certificate mismatch is r
   const c = certs(); const server = tls.createServer(c.dns, s => s.end()); server.on('tlsClientError', () => {});
   const { port } = await listen(t, server);
   for (const servername of [undefined, 'localhost']) {
-    await assert.rejects(connectTls({ hostname: '127.0.0.1', port, tls: { ca: c.ca, servername } }), e => e.errors[0].code === 'ERR_TLS_CERT_ALTNAME_INVALID');
+    await assert.rejects(connectTls({ hostname: '127.0.0.1', port, tls: { ca: c.ca, servername } }), { code: 'ERR_TLS_CERT_ALTNAME_INVALID' });
   }
 });
 contract('Node net/tls and Undici connector APIs', 'DNS mismatch and untrusted issuer are rejected; custom verifier sees original hostname', async t => {
   const c = certs(), server = tls.createServer(c, s => s.end()); server.on('tlsClientError', () => {});
   const { port } = await listen(t, server);
-  await assert.rejects(connectTls({ hostname: 'wrong.test', port, resolver: localResolver, tls: { ca: c.ca } }), e => e.errors[0].code === 'ERR_TLS_CERT_ALTNAME_INVALID');
-  await assert.rejects(connectTls({ hostname: 'localhost', port, resolver: localResolver }), e => e.errors.length === 1);
+  await assert.rejects(connectTls({ hostname: 'wrong.test', port, resolver: localResolver, tls: { ca: c.ca } }), { code: 'ERR_TLS_CERT_ALTNAME_INVALID' });
+  await assert.rejects(connectTls({ hostname: 'localhost', port, resolver: localResolver }),
+    error => typeof error.code === 'string' && !(error instanceof AggregateError));
   let checked;
   const socket = await connectTls({ hostname: 'localhost', port, resolver: localResolver, tls: { ca: c.ca, servername: '', checkServerIdentity: (name, cert) => { checked = name; return tls.checkServerIdentity(name, cert); } } });
   socket.destroy(); assert.equal(checked, 'localhost');
@@ -191,7 +263,7 @@ contract('Connection options API', 'invalid destination and binding combinations
 contract('Node net.Socket API', 'IPv6 block list and internal socket observer preserve candidate ownership', async t => {
   const blocked = new net.BlockList(); blocked.addAddress('::1', 'ipv6');
   await assert.rejects(connectTcp({ hostname: '::1', port: 12345, blockList: blocked }),
-    error => error.errors[0].code === 'ERR_IP_BLOCKED');
+    { code: 'ERR_IP_BLOCKED', message: 'IP(::1) is blocked by net.BlockList' });
   const { port } = await listen(t, net.createServer(socket => socket.end()));
   let observed;
   const socket = await tcp({ hostname: '127.0.0.1', port }, value => { observed = value; });

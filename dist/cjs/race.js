@@ -44,6 +44,14 @@ function race(options, create, ready, time = clock) {
         };
         const clearTimer = () => { if (timer !== undefined)
             time.clear(timer); timer = undefined; };
+        const discard = (socket) => {
+            // Errors already queued by a failed/cancelled socket may arrive before
+            // close. Keep a guard for that interval, then release it.
+            const ignore = () => { };
+            socket.on('error', ignore);
+            socket.once('close', () => socket.removeListener('error', ignore));
+            socket.destroy();
+        };
         const dispose = (winner) => {
             clearTimer();
             options.signal?.removeEventListener('abort', cancel);
@@ -54,30 +62,25 @@ function race(options, create, ready, time = clock) {
             catch { /* cleanup must not prevent settlement */ }
             for (const [socket, detach] of active) {
                 detach();
-                if (socket !== winner) {
-                    // Suppress already-queued errors until close, then remove the guard.
-                    const ignore = () => { };
-                    socket.on('error', ignore);
-                    socket.once('close', () => socket.removeListener('error', ignore));
-                    socket.destroy();
-                }
+                if (socket !== winner)
+                    discard(socket);
             }
             active.clear();
         };
-        const fail = (error) => {
+        const fail = (error, cancelled = false) => {
             if (done)
                 return;
             done = true;
             dispose();
-            if (error.code === 'ABORT_ERR' || error.code === 'ETIMEDOUT')
-                emit({ type: 'cancellation', code: error.code });
+            if (cancelled)
+                emit({ type: 'cancellation', code: (0, errors_js_1.errorCode)(error) });
             reject(error);
         };
-        const cancel = () => fail((0, errors_js_1.abortError)(options.signal?.reason));
+        const cancel = () => fail((0, errors_js_1.abortError)(options.signal?.reason), true);
         const expired = () => {
             if (time.now() < deadline)
                 return false;
-            fail(new errors_js_1.ConnectionError(errors, 'ETIMEDOUT'));
+            fail(new errors_js_1.ConnectionError(errors, 'ETIMEDOUT', true), true);
             return true;
         };
         const pending = (f) => addresses.get(f).filter(c => !attempted.has(key(c)));
@@ -114,14 +117,13 @@ function race(options, create, ready, time = clock) {
             }
             catch (cause) {
                 errors.push(new errors_js_1.AttemptError(candidate, options.port, (0, errors_js_1.asError)(cause)));
-                emit({ type: 'failure', candidate, code: (0, errors_js_1.asError)(cause).code });
+                emit({ type: 'failure', candidate, code: (0, errors_js_1.errorCode)((0, errors_js_1.asError)(cause)) });
                 accelerated = true;
                 return;
             }
             // A user hook may have aborted synchronously during socket creation.
             if (done) {
-                socket.on('error', () => { });
-                socket.destroy();
+                discard(socket);
                 return;
             }
             let finished = false;
@@ -131,19 +133,22 @@ function race(options, create, ready, time = clock) {
                 socket.removeListener('close', closed);
                 socket.removeListener('timeout', timeout);
             };
-            const failure = (cause) => {
+            const failure = (cause, alreadyClosed = false) => {
                 if (finished || done)
                     return;
                 finished = true;
                 detach();
                 active.delete(socket);
-                socket.destroy();
+                if (alreadyClosed)
+                    socket.destroy();
+                else
+                    discard(socket);
                 errors.push(new errors_js_1.AttemptError(candidate, options.port, cause));
-                emit({ type: 'failure', candidate, code: cause.code });
+                emit({ type: 'failure', candidate, code: (0, errors_js_1.errorCode)(cause) });
                 accelerated = true;
                 pump();
             };
-            const closed = () => failure(Object.assign(new Error('Closed before readiness'), { code: 'ECONNRESET' }));
+            const closed = () => failure(Object.assign(new Error('Closed before readiness'), { code: 'ECONNRESET' }), true);
             const timeout = () => options.onTimeout?.(socket);
             const success = () => {
                 if (finished || done) {
@@ -158,7 +163,7 @@ function race(options, create, ready, time = clock) {
                 emit({ type: 'selection', candidate });
                 // Selection observers may abort at the ownership boundary.
                 if (options.signal?.aborted) {
-                    socket.destroy();
+                    discard(socket);
                     reject((0, errors_js_1.abortError)(options.signal.reason));
                 }
                 else
@@ -183,7 +188,7 @@ function race(options, create, ready, time = clock) {
                     return;
             }
             if (families.every(f => complete.has(f)) && !pending(4).length && !pending(6).length && !active.size) {
-                fail(new errors_js_1.ConnectionError(errors, attempted.size ? 'ECONNFAILED' : 'ENOTFOUND'));
+                fail((0, errors_js_1.exhaustedError)(errors));
                 return;
             }
             let wake = deadline;
@@ -209,7 +214,7 @@ function race(options, create, ready, time = clock) {
                 errors.push(value.error);
             if (value.complete)
                 complete.add(value.family);
-            emit({ type: 'resolution', family: value.family, count: unique.size, code: value.error?.code });
+            emit({ type: 'resolution', family: value.family, count: unique.size, code: value.error && (0, errors_js_1.errorCode)(value.error) });
             pump();
         };
         if (options.signal?.aborted) {

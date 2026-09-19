@@ -59,10 +59,14 @@ export function createUndiciConnector(config: UndiciConnectorOptions = {}): Canc
     }
     const controller = new AbortController();
     pending.add(controller);
-    const abort = () => controller.abort(options.signal?.reason ?? config.signal?.reason);
     const signals = [...new Set([options.signal, config.signal].filter((s): s is AbortSignal => !!s))];
-    for (const signal of signals) { signal.addEventListener('abort', abort, { once: true }); if (signal.aborted) abort(); }
-    const cleanup = () => { pending.delete(controller); for (const signal of signals) signal.removeEventListener('abort', abort); };
+    const listeners = signals.map(signal => {
+      const abort = () => controller.abort(signal.reason);
+      signal.addEventListener('abort', abort, { once: true });
+      if (signal.aborted) abort();
+      return { signal, abort };
+    });
+    const cleanup = () => { pending.delete(controller); for (const { signal, abort } of listeners) signal.removeEventListener('abort', abort); };
     const port = Number(options.port || (options.protocol === 'https:' ? 443 : 80));
     const settings: ConnectionOptions = { ...config, hostname: options.hostname, port, localAddress: options.localAddress ?? config.localAddress, signal: controller.signal };
     const servername = options.servername ?? tls.servername;

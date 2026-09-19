@@ -50,6 +50,11 @@ secure.listen(0,'127.0.0.1'); await once(secure,'listening');
 const port=secure.address().port;
 for (const load of [name=>import(name),async name=>require(name)]) {
   const core=await load('compliant-eyeballs'), agents=await load('compliant-eyeballs/agents'), adapter=await load('compliant-eyeballs/undici');
+  const reason=Object.assign(new Error('caller cancellation'),{name:'AbortError',code:'ABORT_ERR'});
+  await assert.rejects(core.connectTcp({hostname:'127.0.0.1',port,signal:AbortSignal.abort(reason)}),error=>error.cause===reason && error!==reason && error.message==='The operation was aborted');
+  assert.equal(new core.ConnectionError([], 'ETIMEDOUT').message, 'Connection deadline exceeded');
+  const lookupError=Object.assign(new Error('lookup failed'),{code:'EAI_AGAIN'});
+  await assert.rejects(core.connectTcp({hostname:'fixture.test',port,lookup:(_host,_options,callback)=>callback(lookupError)}),error=>error===lookupError);
   const socket=await core.connectTls({hostname:'127.0.0.1',port,tls:{ca:material.ca}});
   assert.equal(socket.authorized,true); socket.destroy();
   const agent=agents.createHttpsAgent({ca:material.ca});

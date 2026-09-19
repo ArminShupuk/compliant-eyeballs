@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { EventEmitter, getEventListeners } from 'node:events';
 import { race } from '../dist/esm/race.js';
 import { createSystemResolver } from '../dist/esm/resolver.js';
+import { AttemptError, ConnectionError } from '../dist/esm/index.js';
 
 class Clock {
   value = 0; id = 0; jobs = new Map();
@@ -58,17 +59,138 @@ for (const delay of [0, 49, 50, 51]) rfc('3', `IPv4-first resolution boundary ${
   s.time.tick(250); assert.equal(s.starts[1][1], delay < 50 ? '127.0.0.1' : '::1');
   s.sockets[1].emit('connect'); await s.promise;
 });
-rfc('3', 'definitive empty AAAA ends the resolution window early; errors retained', async () => {
+rfc('3', 'definitive empty AAAA ends the resolution window early; single attempt error is native', async () => {
   const s = setup(); s.update(4, [v4[0]]); s.time.tick(3);
   const cause = Object.assign(new Error('lookup failed'), { code: 'ENOTFOUND' });
   s.update(6, [], true, cause); assert.deepEqual(s.starts, [[3, v4[0]]]);
-  s.sockets[0].emit('error', Object.assign(new Error('refused'), { code: 'ECONNREFUSED' }));
-  await assert.rejects(s.promise, e => e.errors[0] === cause && e.errors[1].address === v4[0] && e.errors[1].code === 'ECONNREFUSED');
+  const refused = Object.assign(new Error('refused'), { code: 'ECONNREFUSED' });
+  s.sockets[0].emit('error', refused);
+  await assert.rejects(s.promise, error => error === refused);
   assert.equal(s.time.jobs.size, 0);
 });
 rfc('3', 'empty results exhaust only when both families complete', async () => {
   const s = setup(); s.update(6, []); assert.equal(s.time.jobs.size, 1); s.update(4, []);
   await assert.rejects(s.promise, { code: 'ENOTFOUND' });
+});
+contract('Node connection error API', 'multiple refusals retain every cause and the native top-level code', async () => {
+  const s = setup(); s.update(6, [v6[0]]); s.update(4, [v4[0]]);
+  const first = Object.assign(new Error('IPv6 refused'), { code: 'ECONNREFUSED' });
+  const second = Object.assign(new Error('IPv4 refused'), { code: 'ECONNREFUSED' });
+  s.sockets[0].emit('error', first); s.time.tick(100);
+  s.sockets[1].emit('error', second);
+  await assert.rejects(s.promise, error => error instanceof AggregateError && error.code === 'ECONNREFUSED'
+    && error.errors.length === 2 && error.errors[0].cause === first && error.errors[1].cause === second);
+});
+contract('Node connection error API', 'mixed failures retain their causes and identify both codes', async () => {
+  const s = setup(); s.update(6, [v6[0]]); s.update(4, [v4[0]]);
+  const certificate = Object.assign(new Error('untrusted issuer'), { code: 'UNABLE_TO_VERIFY_LEAF_SIGNATURE' });
+  const refused = Object.assign(new Error('refused'), { code: 'ECONNREFUSED' });
+  s.sockets[0].emit('error', certificate); s.time.tick(100); s.sockets[1].emit('error', refused);
+  await assert.rejects(s.promise, error => error.code === 'ECONNFAILED'
+    && error.errors[0].cause === certificate && error.errors[1].cause === refused
+    && error.message.includes(certificate.code) && error.message.includes(refused.code));
+});
+contract('Connection diagnostics API', 'matching timeout codes do not imply deadline cancellation', async () => {
+  const s = setup(); s.update(6, [v6[0]]); s.update(4, [v4[0]]);
+  s.sockets[0].emit('error', Object.assign(new Error('first attempt timed out'), { code: 'ETIMEDOUT' }));
+  s.time.tick(100);
+  s.sockets[1].emit('error', Object.assign(new Error('second attempt timed out'), { code: 'ETIMEDOUT' }));
+  await assert.rejects(s.promise, { code: 'ETIMEDOUT', message: 'No connection could be established' });
+  assert.equal(s.events.filter(event => event.type === 'cancellation').length, 0);
+  const deadline = setup(); deadline.time.tick(1000);
+  await assert.rejects(deadline.promise, { code: 'ETIMEDOUT', message: 'Connection deadline exceeded' });
+  assert.deepEqual(deadline.events.filter(event => event.type === 'cancellation').map(event => event.code), ['ETIMEDOUT']);
+});
+contract('Node dns.lookup error API', 'sole lookup failure remains the original error', async () => {
+  const s = setup({ family: 4 });
+  const temporary = Object.assign(new Error('lookup temporarily failed'), { code: 'EAI_AGAIN' });
+  s.update(4, [], true, temporary);
+  await assert.rejects(s.promise, error => error === temporary);
+});
+contract('ConnectionError public API', 'two-argument deadline construction retains its original message', () => {
+  const error = new ConnectionError([], 'ETIMEDOUT');
+  assert.equal(error.message, 'Connection deadline exceeded');
+  assert.equal(error.name, 'ConnectionError');
+  assert.equal(error.code, 'ETIMEDOUT');
+  assert.ok(error instanceof AggregateError);
+  assert.equal(new ConnectionError([], 'ENOTFOUND').message, 'No connection could be established');
+});
+contract('ConnectionError and AttemptError public APIs', 'aggregates preserve lookup errors and attempt metadata without masking their common code', async () => {
+  const s = setup();
+  const lookup = Object.assign(new Error('no AAAA'), { code: 'ENOTFOUND' });
+  s.update(6, [], true, lookup); s.update(4, v4.slice(0, 2));
+  const causes = v4.slice(0, 2).map(address => Object.assign(new Error(`refused ${address}`), { code: 'ECONNREFUSED', address, syscall: 'connect' }));
+  s.sockets[0].emit('error', causes[0]); s.time.tick(100); s.sockets[1].emit('error', causes[1]);
+  await assert.rejects(s.promise, error => {
+    assert.ok(error instanceof ConnectionError);
+    assert.equal(error.code, 'ECONNREFUSED');
+    assert.equal(error.errors[0], lookup);
+    for (const [index, attempt] of error.errors.slice(1).entries()) {
+      assert.ok(attempt instanceof AttemptError);
+      assert.equal(attempt.address, v4[index]);
+      assert.equal(attempt.family, 4);
+      assert.equal(attempt.port, 443);
+      assert.equal(attempt.code, 'ECONNREFUSED');
+      assert.equal(attempt.cause, causes[index]);
+    }
+    return true;
+  });
+});
+contract('Connection error and diagnostic APIs', 'uncoded and reserved-code failures remain exhaustion rather than cancellation', async () => {
+  for (const code of [undefined, 'ETIMEDOUT', 'ABORT_ERR']) {
+    const cause = Object.assign(new Error('candidate failed'), { code });
+    const single = setup(); single.update(6, [v6[0]]); single.update(4, []);
+    single.sockets[0].emit('error', cause);
+    await assert.rejects(single.promise, error => error === cause);
+    assert.equal(single.events.filter(event => event.type === 'cancellation').length, 0);
+    const mixed = setup(); mixed.update(6, [v6[0]]); mixed.update(4, [v4[0]]);
+    mixed.sockets[0].emit('error', cause); mixed.time.tick(100);
+    mixed.sockets[1].emit('error', new Error('uncoded failure'));
+    await assert.rejects(mixed.promise, { code: 'ECONNFAILED' });
+  }
+});
+contract('Node dns.lookup error API', 'family lookup errors keep temporary failures retryable', async () => {
+  const s = setup();
+  const temporary = Object.assign(new Error('lookup temporarily failed'), { code: 'EAI_AGAIN' });
+  const missing = Object.assign(new Error('no AAAA answer'), { code: 'ENOTFOUND' });
+  s.update(6, [], true, missing); s.update(4, [], true, temporary);
+  await assert.rejects(s.promise, error => error.code === 'EAI_AGAIN'
+    && error.errors[0] === missing && error.errors[1] === temporary);
+  const unavailable = setup();
+  unavailable.update(6, [], true, missing);
+  unavailable.update(4, [], true, Object.assign(new Error('no A answer'), { code: 'ENOTFOUND' }));
+  await assert.rejects(unavailable.promise, error => error === missing);
+});
+contract('Connection errors and diagnostic types', 'numeric error codes remain in original causes without violating string-code interfaces', async () => {
+  const reason = new DOMException('custom failure', 'SecurityError');
+  const single = setup(); single.update(6, [v6[0]]); single.update(4, []);
+  single.sockets[0].emit('error', reason);
+  await assert.rejects(single.promise, error => error === reason);
+  for (const lookup of [false, true]) {
+    const s = setup();
+    if (lookup) {
+      s.update(6, [], true, reason); s.update(4, [], true, reason);
+    } else {
+      s.update(6, [v6[0]]); s.update(4, [v4[0]]);
+      s.sockets[0].emit('error', reason); s.time.tick(100); s.sockets[1].emit('error', reason);
+    }
+    await assert.rejects(s.promise, error => {
+      assert.equal(error.code, 'ECONNFAILED');
+      assert.equal(error.errors.length, 2);
+      for (const item of error.errors) {
+        if (lookup) assert.equal(item, reason);
+        else { assert.equal(item.code, undefined); assert.equal(item.cause, reason); }
+      }
+      return true;
+    });
+    for (const event of s.events) assert.equal(event.code, undefined);
+  }
+});
+contract('Node dns.lookup error API', 'other mixed lookup failures remain aggregate', async () => {
+  const s = setup();
+  s.update(6, [], true, Object.assign(new Error('no AAAA answer'), { code: 'ENOTFOUND' }));
+  s.update(4, [], true, Object.assign(new Error('access denied'), { code: 'EACCES' }));
+  await assert.rejects(s.promise, error => error.code === 'ECONNFAILED' && error.errors.length === 2);
 });
 rfc('4', 'same-family candidates, canonical duplicates and first-address count', async () => {
   const s = setup({ firstAddressFamilyCount: 2 });
@@ -192,11 +314,18 @@ contract('Resolver callback and diagnostic observer APIs', 'resolver and observe
 
 contract('AbortSignal and Node Socket APIs', 'synchronous abort during a candidate hook destroys the new socket', async () => {
   let s;
-  s = setup({}, () => { s.controller.abort(); return new Socket(); });
+  s = setup({}, () => {
+    s.controller.abort();
+    const socket = new Socket();
+    socket.destroy = function () { this.destroyed = true; return this; };
+    return socket;
+  });
   s.update(6, ['::1']);
   await assert.rejects(s.promise, { code: 'ABORT_ERR' });
   assert.equal(s.sockets[0].destroyed, true);
   assert.doesNotThrow(() => s.sockets[0].emit('error', Error('queued after abort')));
+  s.sockets[0].emit('close');
+  assert.equal(s.sockets[0].eventNames().length, 0);
   assert.equal(s.time.jobs.size, 0);
 });
 
@@ -220,10 +349,10 @@ contract('Resolver input validation API', 'invalid addresses are ignored before 
 contract('Node Socket close and error APIs', 'closed-before-ready and already-destroyed sockets count as failed attempts', async () => {
   const first = setup(); first.update(6, ['::1']); first.update(4, []);
   first.sockets[0].emit('close');
-  await assert.rejects(first.promise, { code: 'ECONNFAILED' });
+  await assert.rejects(first.promise, { code: 'ECONNRESET' });
   const second = setup({}, () => { const socket = new Socket(); socket.destroyed = true; return socket; });
   second.update(6, ['::1']); second.update(4, []);
-  await assert.rejects(second.promise, { code: 'ECONNFAILED' });
+  await assert.rejects(second.promise, { code: 'ECONNRESET' });
 });
 
 rfc('5', 'callbacks queued before winner cleanup cannot replace the winner', async () => {
@@ -267,6 +396,25 @@ contract('Node Socket error and close APIs', 'queued errors on a losing socket a
   assert.doesNotThrow(() => s.sockets[1].emit('error', Error('queued loser error')));
   s.sockets[1].emit('close');
   assert.equal(await s.promise, s.sockets[0]);
+});
+
+contract('Node Socket error and close APIs', 'failed candidates suppress queued errors until close and release every hook', async () => {
+  const s = setup({}, () => {
+    const socket = new Socket();
+    socket.destroy = function () { this.destroyed = true; return this; };
+    return socket;
+  });
+  s.update(6, ['::1']); s.update(4, []);
+  const reason = Object.assign(new Error('connection refused'), { code: 'ECONNREFUSED' });
+  s.sockets[0].emit('error', reason);
+  assert.doesNotThrow(() => s.sockets[0].emit('error', Error('queued failure')));
+  s.sockets[0].emit('close');
+  await assert.rejects(s.promise, error => error === reason);
+  assert.equal(s.events.filter(event => event.type === 'failure').length, 1);
+  assert.equal(s.sockets[0].eventNames().length, 0);
+  assert.equal(s.time.jobs.size, 0);
+  assert.equal(s.unsubscribed, 1);
+  assert.equal(getEventListeners(s.controller.signal, 'abort').length, 0);
 });
 
 contract('Resolver callback lifecycle API', 'late resolver exceptions cannot replace an already settled result', async () => {

@@ -58,7 +58,7 @@ try {
         env: { ...process.env, EYEBALLS_UNDICI: modulePath, EYEBALLS_TEST_PROTOCOL: mode },
       });
       const passedTests = Number(/^# pass (\d+)$/m.exec(child.stdout ?? '')?.[1]);
-      const pass = child.status === 0 && passedTests === (mode === 'http2' ? 1 : 5);
+      const pass = child.status === 0 && passedTests === (mode === 'http2' ? 1 : 7);
       results.push({ undici: version, protocol: mode === 'http2' ? 'HTTP/2' : 'HTTP/1.1 and consumer fixtures', pass, passedTests,
         ...(pass ? {} : { error: (child.error?.message ?? child.stderr?.slice(-4000)) || child.stdout?.slice(-4000) }) });
       console.log(`Undici ${version} ${mode === 'http2' ? 'HTTP/2' : 'HTTP/1.1'}: ${pass ? 'PASS' : 'FAIL'}`);

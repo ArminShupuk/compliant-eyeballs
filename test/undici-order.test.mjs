@@ -1,8 +1,32 @@
 import { contract } from './classification.mjs';
 import assert from 'node:assert/strict';
-import { EventEmitter } from 'node:events';
+import { EventEmitter, getEventListeners } from 'node:events';
 import { syncBuiltinESMExports } from 'node:module';
 import tls from 'node:tls';
+import { createUndiciConnector } from '../dist/esm/undici.js';
+
+contract('Undici connector AbortSignal API', 'each signal preserves its exact reason and releases listeners', async () => {
+  const abortReason = Object.assign(new Error('caller abort'), { name: 'AbortError', code: 'ABORT_ERR' });
+  for (const reason of [null, false, 0, '', abortReason]) for (const source of ['request', 'factory']) for (const early of [true, false]) {
+    const request = new AbortController(), factory = new AbortController();
+    const selected = source === 'request' ? request : factory;
+    if (early) selected.abort(reason);
+    let calls = 0;
+    const connector = createUndiciConnector({ signal: factory.signal, resolver: () => {} });
+    const result = new Promise(resolve => connector({ hostname: 'fixture.test', port: '80', protocol: 'http:', signal: request.signal }, (error, socket) => {
+      calls++; assert.equal(socket, null); resolve(error);
+    }));
+    if (!early) selected.abort(reason);
+    const error = await result;
+    assert.equal(error.code, 'ABORT_ERR');
+    assert.equal(error.message, 'The operation was aborted');
+    assert.equal(error.cause, reason);
+    request.abort('later request reason'); factory.abort('later factory reason'); connector.destroy();
+    await Promise.resolve();
+    assert.equal(calls, 1);
+    for (const controller of [request, factory]) assert.equal(getEventListeners(controller.signal, 'abort').length, 0);
+  }
+});
 
 contract('Node TLS session event and Undici Connector APIs', 'tickets before TLS readiness, cache eviction and handoff cancellation', async () => {
   const original = tls.connect, calls = [], sockets = [];

@@ -1,10 +1,11 @@
 import * as http from 'node:http';
 import * as https from 'node:https';
 import { Socket } from 'node:net';
+import { getSystemErrorMap } from 'node:util';
 import type { TLSSocket } from 'node:tls';
 import type { Duplex } from 'node:stream';
 import { tcp, secure } from './connect.js';
-import { abortError } from './errors.js';
+import { abortError, errorCode } from './errors.js';
 import { directOnlyError, proxyOption, requireDirect, requireOwnedTransport, timing } from './config.js';
 import type { ConnectionOptions, TlsOptions } from './types.js';
 
@@ -34,8 +35,19 @@ interface Entry {
   cleanup(): void;
 }
 const entryKey = Symbol('compliant-eyeballs request');
-function failRequest(req: Request, error: Error): void {
+function failRequest(req: Request, error?: Error): void {
   (req.onSocket as (socket: Socket | undefined, error?: Error) => void)(undefined, error);
+}
+function nativeHttpsError(error: Error): Error {
+  // Native ClientRequest writes before TLS readiness and reports OpenSSL
+  // protocol failures as write EPROTO. This agent waits for secureConnect.
+  const code = errorCode(error);
+  if (!code?.startsWith('ERR_SSL_') || (error as Error & { library?: string }).library !== 'SSL routines') return error;
+  // Node reports libuv errno values, which differ from OS errno on Windows.
+  const errno = [...getSystemErrorMap()].find(([, [name]]) => name === 'EPROTO')![0];
+  return Object.assign(new Error(`write EPROTO ${error.message}`, { cause: error }), {
+    code: 'EPROTO', syscall: 'write', errno,
+  });
 }
 function requireDirectOptions(options: object): void {
   requireDirect(options);
@@ -68,6 +80,9 @@ function install(agent: NativeAgent, connection: AgentConnectionOptions, tls: bo
   };
 
   agent.addRequest = (req, options) => {
+    // A pre-aborted request signal destroys ClientRequest before addRequest.
+    // Report its saved error without waiting for DNS or the race deadline.
+    if (req.destroyed) { process.nextTick(() => failRequest(req)); return; }
     if (destroyed) { process.nextTick(() => failRequest(req, abortError('Agent destroyed'))); return; }
     // ws supplies a request-level createConnection even when an Agent owns the
     // socket. It is not evidence that this direct Agent owns a proxy route.
@@ -107,7 +122,7 @@ function install(agent: NativeAgent, connection: AgentConnectionOptions, tls: bo
       removeQueued(req);
       if (!entry.active && !entry.handed) {
         entry.handed = true;
-        failRequest(req, error ?? abortError());
+        failRequest(req);
       }
       return result;
     }
@@ -206,10 +221,17 @@ function install(agent: NativeAgent, connection: AgentConnectionOptions, tls: bo
       if (tls) socket.on('session', session => { if (winner === socket) cache(session); else if (!winner) tickets.set(socket, session); });
     };
     const promise = tls ? secure({ ...settings, tls: { ...tlsOptions, session: tlsOptions.session ?? sessions.get(sessionKey) } }, observe) : tcp(settings, observe);
+    const failed = (error: Error) => {
+      if (entry) { entry.handed = true; removeQueued(entry.req); }
+      // ClientRequest already owns the destroy error (including native signal
+      // wrapping), and distinguishes destroy() from abort(). Let onSocket use it.
+      if (entry?.req.destroyed) failRequest(entry.req);
+      else finish(tls && entry?.req.writableLength ? nativeHttpsError(error) : error);
+    };
     promise.then(socket => {
       release();
       if (controller.signal.aborted || destroyed) {
-        socket.destroy(); finish(abortError(controller.signal.reason));
+        socket.destroy(); failed(abortError(controller.signal.reason));
         agent.removeSocket(reservation, options);
       } else {
         if (tls) { winner = socket as TLSSocket; const ticket = tickets.get(socket); if (ticket) cache(ticket); }
@@ -218,8 +240,7 @@ function install(agent: NativeAgent, connection: AgentConnectionOptions, tls: bo
       }
     }, error => {
       release();
-      if (entry) { entry.handed = true; removeQueued(entry.req); }
-      finish(error);
+      failed(error);
       agent.removeSocket(reservation, options);
     });
     return undefined;

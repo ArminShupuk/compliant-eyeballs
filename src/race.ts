@@ -1,7 +1,7 @@
 import { isIP, type Socket } from 'node:net';
 import { performance } from 'node:perf_hooks';
 import { destination, MAX_TIMER_MS, timing } from './config.js';
-import { abortError, asError, AttemptError, ConnectionError } from './errors.js';
+import { abortError, asError, AttemptError, ConnectionError, errorCode, exhaustedError } from './errors.js';
 import { createSystemResolver } from './resolver.js';
 import type { Candidate, ConnectionOptions, DiagnosticEvent, Family, ResolutionUpdate } from './types.js';
 
@@ -42,6 +42,14 @@ export function race<T extends Socket>(options: ConnectionOptions, create: (cand
       try { options.onDiagnostic?.(Object.freeze({ ...event, candidate: event.candidate && Object.freeze({ ...event.candidate }), elapsedMs: time.now() - started })); } catch { /* observer only */ }
     };
     const clearTimer = () => { if (timer !== undefined) time.clear(timer); timer = undefined; };
+    const discard = (socket: T) => {
+      // Errors already queued by a failed/cancelled socket may arrive before
+      // close. Keep a guard for that interval, then release it.
+      const ignore = () => {};
+      socket.on('error', ignore);
+      socket.once('close', () => socket.removeListener('error', ignore));
+      socket.destroy();
+    };
     const dispose = (winner?: T) => {
       clearTimer();
       options.signal?.removeEventListener('abort', cancel);
@@ -49,27 +57,21 @@ export function race<T extends Socket>(options: ConnectionOptions, create: (cand
       try { unsubscribe?.(); } catch { /* cleanup must not prevent settlement */ }
       for (const [socket, detach] of active) {
         detach();
-        if (socket !== winner) {
-          // Suppress already-queued errors until close, then remove the guard.
-          const ignore = () => {};
-          socket.on('error', ignore);
-          socket.once('close', () => socket.removeListener('error', ignore));
-          socket.destroy();
-        }
+        if (socket !== winner) discard(socket);
       }
       active.clear();
     };
-    const fail = (error: Error) => {
+    const fail = (error: Error, cancelled = false) => {
       if (done) return;
       done = true;
       dispose();
-      if ((error as NodeJS.ErrnoException).code === 'ABORT_ERR' || (error as NodeJS.ErrnoException).code === 'ETIMEDOUT') emit({ type: 'cancellation', code: (error as NodeJS.ErrnoException).code });
+      if (cancelled) emit({ type: 'cancellation', code: errorCode(error) });
       reject(error);
     };
-    const cancel = () => fail(abortError(options.signal?.reason));
+    const cancel = () => fail(abortError(options.signal?.reason), true);
     const expired = () => {
       if (time.now() < deadline) return false;
-      fail(new ConnectionError(errors, 'ETIMEDOUT')); return true;
+      fail(new ConnectionError(errors, 'ETIMEDOUT', true), true); return true;
     };
     const pending = (f: Family) => addresses.get(f)!.filter(c => !attempted.has(key(c)));
     const next = (): Candidate | undefined => {
@@ -98,12 +100,12 @@ export function race<T extends Socket>(options: ConnectionOptions, create: (cand
       let socket: T;
       try { socket = create(candidate); } catch (cause) {
         errors.push(new AttemptError(candidate, options.port, asError(cause)));
-        emit({ type: 'failure', candidate, code: (asError(cause) as NodeJS.ErrnoException).code });
+        emit({ type: 'failure', candidate, code: errorCode(asError(cause)) });
         accelerated = true;
         return;
       }
       // A user hook may have aborted synchronously during socket creation.
-      if (done) { socket.on('error', () => {}); socket.destroy(); return; }
+      if (done) { discard(socket); return; }
       let finished = false;
       const detach = () => {
         socket.removeListener(ready, success);
@@ -111,16 +113,17 @@ export function race<T extends Socket>(options: ConnectionOptions, create: (cand
         socket.removeListener('close', closed);
         socket.removeListener('timeout', timeout);
       };
-      const failure = (cause: Error) => {
+      const failure = (cause: Error, alreadyClosed = false) => {
         if (finished || done) return;
         finished = true;
-        detach(); active.delete(socket); socket.destroy();
+        detach(); active.delete(socket);
+        if (alreadyClosed) socket.destroy(); else discard(socket);
         errors.push(new AttemptError(candidate, options.port, cause));
-        emit({ type: 'failure', candidate, code: (cause as NodeJS.ErrnoException).code });
+        emit({ type: 'failure', candidate, code: errorCode(cause) });
         accelerated = true;
         pump();
       };
-      const closed = () => failure(Object.assign(new Error('Closed before readiness'), { code: 'ECONNRESET' }));
+      const closed = () => failure(Object.assign(new Error('Closed before readiness'), { code: 'ECONNRESET' }), true);
       const timeout = () => options.onTimeout?.(socket);
       const success = () => {
         if (finished || done) { socket.destroy(); return; }
@@ -129,7 +132,7 @@ export function race<T extends Socket>(options: ConnectionOptions, create: (cand
         dispose(socket);
         emit({ type: 'selection', candidate });
         // Selection observers may abort at the ownership boundary.
-        if (options.signal?.aborted) { socket.destroy(); reject(abortError(options.signal.reason)); }
+        if (options.signal?.aborted) { discard(socket); reject(abortError(options.signal.reason)); }
         else resolve(socket);
       };
       active.set(socket, detach);
@@ -147,7 +150,7 @@ export function race<T extends Socket>(options: ConnectionOptions, create: (cand
         if (done) return;
       }
       if (families.every(f => complete.has(f)) && !pending(4).length && !pending(6).length && !active.size) {
-        fail(new ConnectionError(errors, attempted.size ? 'ECONNFAILED' : 'ENOTFOUND')); return;
+        fail(exhaustedError(errors)); return;
       }
       let wake = deadline;
       if (next()) wake = Math.min(wake, lastStart + (accelerated ? config.minAttemptDelayMs : config.attemptDelayMs));
@@ -165,7 +168,7 @@ export function race<T extends Socket>(options: ConnectionOptions, create: (cand
       addresses.set(value.family, [...unique.values()]);
       if (value.error) errors.push(value.error);
       if (value.complete) complete.add(value.family);
-      emit({ type: 'resolution', family: value.family, count: unique.size, code: (value.error as NodeJS.ErrnoException | undefined)?.code });
+      emit({ type: 'resolution', family: value.family, count: unique.size, code: value.error && errorCode(value.error) });
       pump();
     };
     if (options.signal?.aborted) { cancel(); return; }

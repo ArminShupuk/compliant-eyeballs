@@ -209,8 +209,32 @@ connected, normal socket/HTTP timeouts apply.
 
 Abort closes all candidates, cancels scheduling and ignores late resolution.
 After the promise resolves, the caller owns cancellation of the returned socket.
-Aggregate `ConnectionError.errors` retain `AttemptError` address/family/port/code
-and the original `cause`. Lookup failures are retained alongside attempt failures.
+One failed address or lookup returns its original Node error, including its
+name, code and message. A negative lookup for another address family does not
+replace a failed address's error. Multiple failed addresses return an aggregate
+`ConnectionError`: its code is the common attempt code when all attempts agree,
+or `ECONNFAILED` when they differ. Its `errors` retain each `AttemptError`
+address/family/port/code and original `cause`, plus any lookup errors. Mixed
+failure codes also appear in the aggregate message. With no attempted address,
+an `EAI_AGAIN` lookup remains retryable and definitive empty results report
+`ENOTFOUND`; matching failures from both family lookups use the original lookup
+error. The overall deadline and abort report `ETIMEDOUT` and `ABORT_ERR`.
+Abort errors use Node's standard message and retain the exact signal reason in
+`cause`, including `null` or another abort error. Pending HTTP requests preserve
+native `destroy(error)`, `destroy()` and `abort()` error behavior. For a single
+failed candidate, the HTTPS agent reports OpenSSL protocol failures as
+`write EPROTO` when the request has queued a write, with the original TLS error
+in `cause`. Requests without a queued write, direct TLS, Undici and the causes
+inside multi-candidate aggregates retain the original TLS errors.
+Custom errors with numeric codes remain unchanged as single errors or causes;
+aggregate and diagnostic code fields use only string codes.
+
+Aggregates intentionally retain the library's `ConnectionError` and
+`AttemptError` metadata; mixed failures use `ECONNFAILED` rather than Node's
+first-error code. The overall deadline covers DNS and all candidates and uses
+`ETIMEDOUT`, rather than Undici's `UND_ERR_CONNECT_TIMEOUT`. See the
+[error compatibility audit](docs/audits/error-compatibility.md) for validation
+and compatibility boundaries.
 
 Each race can keep one socket per distinct address until a winner or deadline.
 Limit concurrent requests to bound socket use. An unconstrained hostname lookup

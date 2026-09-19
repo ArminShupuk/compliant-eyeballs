@@ -1,12 +1,25 @@
 import * as http from 'node:http';
 import * as https from 'node:https';
 import { Socket } from 'node:net';
+import { getSystemErrorMap } from 'node:util';
 import { tcp, secure } from './connect.js';
-import { abortError } from './errors.js';
+import { abortError, errorCode } from './errors.js';
 import { directOnlyError, proxyOption, requireDirect, requireOwnedTransport, timing } from './config.js';
 const entryKey = Symbol('compliant-eyeballs request');
 function failRequest(req, error) {
     req.onSocket(undefined, error);
+}
+function nativeHttpsError(error) {
+    // Native ClientRequest writes before TLS readiness and reports OpenSSL
+    // protocol failures as write EPROTO. This agent waits for secureConnect.
+    const code = errorCode(error);
+    if (!code?.startsWith('ERR_SSL_') || error.library !== 'SSL routines')
+        return error;
+    // Node reports libuv errno values, which differ from OS errno on Windows.
+    const errno = [...getSystemErrorMap()].find(([, [name]]) => name === 'EPROTO')[0];
+    return Object.assign(new Error(`write EPROTO ${error.message}`, { cause: error }), {
+        code: 'EPROTO', syscall: 'write', errno,
+    });
 }
 function requireDirectOptions(options) {
     requireDirect(options);
@@ -42,6 +55,12 @@ function install(agent, connection, tls) {
         }
     };
     agent.addRequest = (req, options) => {
+        // A pre-aborted request signal destroys ClientRequest before addRequest.
+        // Report its saved error without waiting for DNS or the race deadline.
+        if (req.destroyed) {
+            process.nextTick(() => failRequest(req));
+            return;
+        }
         if (destroyed) {
             process.nextTick(() => failRequest(req, abortError('Agent destroyed')));
             return;
@@ -92,7 +111,7 @@ function install(agent, connection, tls) {
             removeQueued(req);
             if (!entry.active && !entry.handed) {
                 entry.handed = true;
-                failRequest(req, error ?? abortError());
+                failRequest(req);
             }
             return result;
         }
@@ -221,11 +240,23 @@ function install(agent, connection, tls) {
                     tickets.set(socket, session); });
         };
         const promise = tls ? secure({ ...settings, tls: { ...tlsOptions, session: tlsOptions.session ?? sessions.get(sessionKey) } }, observe) : tcp(settings, observe);
+        const failed = (error) => {
+            if (entry) {
+                entry.handed = true;
+                removeQueued(entry.req);
+            }
+            // ClientRequest already owns the destroy error (including native signal
+            // wrapping), and distinguishes destroy() from abort(). Let onSocket use it.
+            if (entry?.req.destroyed)
+                failRequest(entry.req);
+            else
+                finish(tls && entry?.req.writableLength ? nativeHttpsError(error) : error);
+        };
         promise.then(socket => {
             release();
             if (controller.signal.aborted || destroyed) {
                 socket.destroy();
-                finish(abortError(controller.signal.reason));
+                failed(abortError(controller.signal.reason));
                 agent.removeSocket(reservation, options);
             }
             else {
@@ -241,11 +272,7 @@ function install(agent, connection, tls) {
             }
         }, error => {
             release();
-            if (entry) {
-                entry.handed = true;
-                removeQueued(entry.req);
-            }
-            finish(error);
+            failed(error);
             agent.removeSocket(reservation, options);
         });
         return undefined;

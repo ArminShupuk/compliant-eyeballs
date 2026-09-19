@@ -60,6 +60,87 @@ nonH2Test('Undici Dispatcher and Node HTTPS APIs', 'ALPN HTTP/1.1 fallback and s
   assert.equal(await (await undici.request(url, { dispatcher })).body.text(), 'h1');
   assert.equal(await (await fetch(url, { agent: native })).text(), 'h1');
 });
+nonH2Test('Undici, node-fetch and WebSocket error APIs', 'single refusal and untrusted issuer retain consumer error shapes', async t => {
+  const server = net.createServer();
+  const { port } = await listen(t, server);
+  await new Promise(resolve => server.close(resolve));
+  const url = `http://127.0.0.1:${port}/`;
+  const connector = createUndiciConnector();
+  const dispatcher = new undici.Agent({ connect: connector });
+  const agent = createHttpAgent();
+  t.after(async () => { agent.destroy(); connector.destroy(); await dispatcher.destroy(); });
+  const failed = async promise => {
+    const error = await promise.catch(value => value);
+    assert.ok(error instanceof Error);
+    return error;
+  };
+  const sameError = (native, replacement) => {
+    for (const key of ['name', 'code', 'message']) assert.equal(replacement[key], native[key]);
+  };
+
+  const nativeUndici = await failed(undici.fetch(url));
+  const replacementUndici = await failed(undici.fetch(url, { dispatcher }));
+  sameError(nativeUndici, replacementUndici);
+  sameError(nativeUndici.cause, replacementUndici.cause);
+  sameError(await failed(fetch(url)), await failed(fetch(url, { agent })));
+  sameError(await failed(fetchV3(url)), await failed(fetchV3(url, { agent })));
+
+  for (const code of ['ENOTFOUND', 'EAI_AGAIN']) {
+    const lookup = (_hostname, _options, callback) => queueMicrotask(() => callback(Object.assign(new Error(`lookup ${code} fixture.test`), { code })));
+    const dnsUrl = 'http://fixture.test/';
+    const nativeDnsDispatcher = new undici.Agent({ connect: { lookup } });
+    const dnsConnector = createUndiciConnector({ lookup });
+    const replacementDnsDispatcher = new undici.Agent({ connect: dnsConnector });
+    const nativeDns = await failed(undici.fetch(dnsUrl, { dispatcher: nativeDnsDispatcher }));
+    const replacementDns = await failed(undici.fetch(dnsUrl, { dispatcher: replacementDnsDispatcher }));
+    sameError(nativeDns, replacementDns);
+    sameError(nativeDns.cause, replacementDns.cause);
+    dnsConnector.destroy();
+    await Promise.all([nativeDnsDispatcher.destroy(), replacementDnsDispatcher.destroy()]);
+  }
+
+  const webSocketError = options => new Promise(resolve => new WebSocket(url.replace('http:', 'ws:'), options).once('error', resolve));
+  sameError(await webSocketError(), await webSocketError({ agent }));
+
+  const c = certs();
+  const secureServer = https.createServer(c, (_request, result) => result.end());
+  secureServer.on('tlsClientError', () => {});
+  const secure = await listen(t, secureServer);
+  const secureUrl = `https://127.0.0.1:${secure.port}/`;
+  const secureAgent = createHttpsAgent(); t.after(() => secureAgent.destroy());
+  const nativeTls = await failed(undici.fetch(secureUrl));
+  const replacementTls = await failed(undici.fetch(secureUrl, { dispatcher }));
+  sameError(nativeTls, replacementTls);
+  sameError(nativeTls.cause, replacementTls.cause);
+  sameError(await failed(fetch(secureUrl)), await failed(fetch(secureUrl, { agent: secureAgent })));
+  sameError(await failed(fetchV3(secureUrl)), await failed(fetchV3(secureUrl, { agent: secureAgent })));
+  const secureWebSocketError = options => new Promise(resolve => new WebSocket(secureUrl.replace('https:', 'wss:'), options).once('error', resolve));
+  sameError(await secureWebSocketError(), await secureWebSocketError({ agent: secureAgent }));
+});
+nonH2Test('Undici connector error API', 'protocol failures remain native TLS errors and cancellation retains a null cause', async t => {
+  const { port } = await listen(t, net.createServer(socket => socket.end('HTTP/1.1 200 OK\r\n\r\n')));
+  const connector = createUndiciConnector();
+  const dispatcher = new undici.Agent({ connect: connector });
+  t.after(async () => { connector.destroy(); await dispatcher.destroy(); });
+  const url = `https://127.0.0.1:${port}/`;
+  const expected = await undici.fetch(url).catch(error => error);
+  const actual = await undici.fetch(url, { dispatcher }).catch(error => error);
+  assert.ok(actual instanceof Error);
+  for (const key of ['name', 'code', 'message']) assert.equal(actual.cause[key], expected.cause[key]);
+  assert.match(actual.cause.code, /^ERR_SSL_/);
+
+  const controller = new AbortController();
+  let started;
+  const resolving = new Promise(resolve => { started = resolve; });
+  const pendingConnector = createUndiciConnector({ signal: controller.signal, resolver: () => { started(); } });
+  const pendingDispatcher = new undici.Agent({ connect: pendingConnector });
+  t.after(async () => { pendingConnector.destroy(); await pendingDispatcher.destroy(); });
+  const request = undici.request('http://fixture.test/', { dispatcher: pendingDispatcher }).catch(error => error);
+  await resolving; controller.abort(null);
+  const error = await request;
+  assert.equal(error.code, 'ABORT_ERR');
+  assert.equal(error.cause, null);
+});
 nonH2Test('node-fetch 2.6.7 and WebDAV', 'node-fetch 2.6.7 WebDAV, multiple IPv4 candidates, upload and abort', async t => {
   let method, body;
   const server = http.createServer(async (req, res) => {

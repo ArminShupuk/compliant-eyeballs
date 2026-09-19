@@ -4,7 +4,7 @@ import { destination, requireDirect, requireOwnedTransport } from './config.js';
 import { race } from './race.js';
 function tcpOptions(options, candidate) {
     if (options.blockList?.check(candidate.address, candidate.family === 6 ? 'ipv6' : 'ipv4')) {
-        throw Object.assign(new Error('Destination blocked'), { code: 'ERR_IP_BLOCKED' });
+        throw Object.assign(new Error(`IP(${candidate.address}) is blocked by net.BlockList`), { code: 'ERR_IP_BLOCKED' });
     }
     return {
         host: candidate.address, port: options.port, family: candidate.family, autoSelectFamily: false,

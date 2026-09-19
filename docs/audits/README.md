@@ -35,3 +35,7 @@ Connection timing, exact minimum spacing under slow TCP, and true simultaneous w
 
 The final audit adds [measured TCP timeout comparisons](timeouts.md), a
 [regression index](regressions.md) and the [whole-library review](final.md).
+
+The subsequent [error compatibility audit](error-compatibility.md) reviews the
+Node/Undici alignment changes, their corrections and the associated regression
+and version-matrix results.

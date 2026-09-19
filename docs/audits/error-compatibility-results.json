@@ -1,0 +1,398 @@
+{
+  "checked": "2026-09-19T22:25:23.091361+00:00",
+  "baseCommit": "a2cd08513a9e236a6d601056f3cc6fc6b8f7ba0d",
+  "includesWorkingTreeChanges": true,
+  "platform": "linux",
+  "architecture": "x64",
+  "sourceSha256": {
+    "src/agents.ts": "912f6ef73a7aad1b0e4571d9b33ca9f6817dd07d3332f1220abf9afdc83774b1",
+    "src/config.ts": "5b88b2e88a94fa80fd08e91d20d83bbfa7363364fd950ef15190109cc976d1e1",
+    "src/connect.ts": "7412328ea23245c3709ffc32ed52292e4b586ff0f3ff8f5b5d6d647123d9a9a3",
+    "src/errors.ts": "cdb0f58d5f331b2552d751a7352e07ca566db43b8dd280fd3cf7021b4a611540",
+    "src/index.ts": "4d42126dad0d63577a4e9eb157ac99edd0ede26fa8a15f119a51c7cb5405cf1c",
+    "src/race.ts": "9b8a1128019a842bf4bea4f570462b4e2c56f196822b0ff65fd86fb485e6521c",
+    "src/resolver.ts": "60cc47dfc42c9d532d68e9073dc0a9f2c08687b75b60b5ad66a3f8387c8b7ffc",
+    "src/types.ts": "3e9bb33043734fe2aadf2ffd41219777f875e0db82389ce0132e1b99d81840c2",
+    "src/undici.ts": "a1dbf80638d732b95dcce496e350f6c421ca6adc0b97459c09408d677ab3a5fd",
+    "test/agents.test.mjs": "0b09a6c4f51e36cfdaea08739ac53bbb8d9ea24a42fb3718078c6b24f28c85d2",
+    "test/network.test.mjs": "e4bdcb3f70aef3c9575673a83fcf0516bcc80bc7de523a3ed9aedb652adc79fb",
+    "test/runtime.test.mjs": "26666f0d3703a89f239a4d3c9f84fa7cf38a419163729c8f50c311bec17d0771",
+    "test/scheduler.test.mjs": "594087428fdbe155abc47ba2d001795f65ad229ea8d8a744e4b4061a86039ca5",
+    "test/undici-order.test.mjs": "306edb077685075876c12012f03f3f25d7fbf2ccdff62001c0c8b8ec081895f0",
+    "fixtures/consumers.test.mjs": "16e68222d69ec4fc33d730fd1c47ccb76397a11b3f5da05ef9600775b6d36974",
+    "scripts/package-test.mjs": "43a33cf23c6e62c1d4aed4ac8d50a98a8c57da946bf323e282e2387c325eb56b",
+    "scripts/undici-minor-test.mjs": "1507d601db98ddf156bcfab9925141b8608b294d04b5e322ed298cc18f748405"
+  },
+  "check": {
+    "command": "npm run check",
+    "pass": true,
+    "coreTests": 139,
+    "consumerPasses": 7,
+    "consumerSkips": 1,
+    "skipReason": "Undici 6 HTTP/2 excluded; Undici 8 HTTP/2 passes in coverage and matrix",
+    "packedInstall": "ESM/CommonJS, all public entrypoints, errors and TypeScript resolution modes passed"
+  },
+  "coverage": {
+    "command": "npm run test:coverage",
+    "pass": true,
+    "tests": 147,
+    "node": "24.21.0",
+    "modules": [
+      {
+        "path": "dist/esm/agents.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/config.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/connect.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/errors.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/index.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/race.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/resolver.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/types.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      },
+      {
+        "path": "dist/esm/undici.js",
+        "lines": 100,
+        "branches": 100,
+        "functions": 100
+      }
+    ]
+  },
+  "runtimeMatrix": {
+    "commands": [
+      "npm run test:matrix -- --installed",
+      "node scripts/matrix-test.mjs --current (Node 26.9.0)"
+    ],
+    "node26Source": "https://nodejs.org/dist/v26.9.0/",
+    "node26ChecksumVerified": true,
+    "pass": true,
+    "runtimes": 11,
+    "compatiblePairs": 78,
+    "excludedPairs": 10,
+    "results": [
+      {
+        "node": "20.0.0",
+        "corePassed": true,
+        "undiciPassed": [
+          "6.0.0",
+          "6.21.2",
+          "6.27.0",
+          "6.28.0"
+        ],
+        "undiciExcluded": [
+          {
+            "version": "7.26.0",
+            "reason": "Undici requires Node >=20.18.1"
+          },
+          {
+            "version": "7.29.0",
+            "reason": "Undici requires Node >=20.18.1"
+          },
+          {
+            "version": "8.0.0",
+            "reason": "Undici requires Node >=22.19.0"
+          },
+          {
+            "version": "8.10.0",
+            "reason": "Undici requires Node >=22.19.0"
+          }
+        ]
+      },
+      {
+        "node": "20.18.1",
+        "corePassed": true,
+        "undiciPassed": [
+          "6.0.0",
+          "6.21.2",
+          "6.27.0",
+          "6.28.0",
+          "7.26.0",
+          "7.29.0"
+        ],
+        "undiciExcluded": [
+          {
+            "version": "8.0.0",
+            "reason": "Undici requires Node >=22.19.0"
+          },
+          {
+            "version": "8.10.0",
+            "reason": "Undici requires Node >=22.19.0"
+          }
+        ]
+      },
+      {
+        "node": "22.0.0",
+        "corePassed": true,
+        "undiciPassed": [
+          "6.0.0",
+          "6.21.2",
+          "6.27.0",
+          "6.28.0",
+          "7.26.0",
+          "7.29.0"
+        ],
+        "undiciExcluded": [
+          {
+            "version": "8.0.0",
+            "reason": "Undici requires Node >=22.19.0"
+          },
+          {
+            "version": "8.10.0",
+            "reason": "Undici requires Node >=22.19.0"
+          }
+        ]
+      },
+      {
+        "node": "22.12.0",
+        "corePassed": true,
+        "undiciPassed": [
+          "6.0.0",
+          "6.21.2",
+          "6.27.0",
+          "6.28.0",
+          "7.26.0",
+          "7.29.0"
+        ],
+        "undiciExcluded": [
+          {
+            "version": "8.0.0",
+            "reason": "Undici requires Node >=22.19.0"
+          },
+          {
+            "version": "8.10.0",
+            "reason": "Undici requires Node >=22.19.0"
+          }
+        ]
+      },
+      {
+        "node": "22.19.0",
+        "corePassed": true,
+        "undiciPassed": [
+          "6.0.0",
+          "6.21.2",
+          "6.27.0",
+          "6.28.0",
+          "7.26.0",
+          "7.29.0",
+          "8.0.0",
+          "8.10.0"
+        ],
+        "undiciExcluded": []
+      },
+      {
+        "node": "24.15.0",
+        "corePassed": true,
+        "undiciPassed": [
+          "6.0.0",
+          "6.21.2",
+          "6.27.0",
+          "6.28.0",
+          "7.26.0",
+          "7.29.0",
+          "8.0.0",
+          "8.10.0"
+        ],
+        "undiciExcluded": []
+      },
+      {
+        "node": "24.17.0",
+        "corePassed": true,
+        "undiciPassed": [
+          "6.0.0",
+          "6.21.2",
+          "6.27.0",
+          "6.28.0",
+          "7.26.0",
+          "7.29.0",
+          "8.0.0",
+          "8.10.0"
+        ],
+        "undiciExcluded": []
+      },
+      {
+        "node": "24.18.0",
+        "corePassed": true,
+        "undiciPassed": [
+          "6.0.0",
+          "6.21.2",
+          "6.27.0",
+          "6.28.0",
+          "7.26.0",
+          "7.29.0",
+          "8.0.0",
+          "8.10.0"
+        ],
+        "undiciExcluded": []
+      },
+      {
+        "node": "24.19.0",
+        "corePassed": true,
+        "undiciPassed": [
+          "6.0.0",
+          "6.21.2",
+          "6.27.0",
+          "6.28.0",
+          "7.26.0",
+          "7.29.0",
+          "8.0.0",
+          "8.10.0"
+        ],
+        "undiciExcluded": []
+      },
+      {
+        "node": "24.21.0",
+        "corePassed": true,
+        "undiciPassed": [
+          "6.0.0",
+          "6.21.2",
+          "6.27.0",
+          "6.28.0",
+          "7.26.0",
+          "7.29.0",
+          "8.0.0",
+          "8.10.0"
+        ],
+        "undiciExcluded": []
+      },
+      {
+        "node": "26.9.0",
+        "corePassed": true,
+        "undiciPassed": [
+          "6.0.0",
+          "6.21.2",
+          "6.27.0",
+          "6.28.0",
+          "7.26.0",
+          "7.29.0",
+          "8.0.0",
+          "8.10.0"
+        ],
+        "undiciExcluded": []
+      }
+    ]
+  },
+  "undiciMinorSweep": {
+    "command": "npm run test:undici-minors",
+    "pass": true,
+    "node": "24.21.0",
+    "versions": [
+      "6.0.0",
+      "6.0.1",
+      "6.1.0",
+      "6.2.1",
+      "6.3.0",
+      "6.4.0",
+      "6.5.0",
+      "6.6.2",
+      "6.7.1",
+      "6.8.0",
+      "6.9.0",
+      "6.10.2",
+      "6.11.1",
+      "6.12.0",
+      "6.13.0",
+      "6.14.1",
+      "6.15.0",
+      "6.16.1",
+      "6.17.0",
+      "6.18.2",
+      "6.19.8",
+      "6.20.1",
+      "6.21.3",
+      "6.22.0",
+      "6.23.0",
+      "6.24.1",
+      "6.25.0",
+      "6.26.0",
+      "6.27.0",
+      "6.28.1",
+      "7.0.0",
+      "7.1.1",
+      "7.2.3",
+      "7.3.0",
+      "7.4.0",
+      "7.5.0",
+      "7.6.0",
+      "7.7.0",
+      "7.8.0",
+      "7.9.0",
+      "7.10.0",
+      "7.11.0",
+      "7.12.0",
+      "7.13.0",
+      "7.14.0",
+      "7.15.0",
+      "7.16.0",
+      "7.17.0",
+      "7.18.2",
+      "7.19.2",
+      "7.20.0",
+      "7.21.0",
+      "7.22.0",
+      "7.23.0",
+      "7.24.8",
+      "7.25.0",
+      "7.26.0",
+      "7.27.2",
+      "7.28.0",
+      "7.29.1",
+      "8.0.0",
+      "8.0.3",
+      "8.1.0",
+      "8.2.0",
+      "8.3.0",
+      "8.4.1",
+      "8.5.0",
+      "8.6.0",
+      "8.7.0",
+      "8.8.0",
+      "8.9.0",
+      "8.10.2"
+    ],
+    "checks": 84,
+    "http1Passes": 72,
+    "http2Passes": 12
+  },
+  "notRun": [
+    "native macOS",
+    "native Windows",
+    "Electron",
+    "Docker"
+  ]
+}

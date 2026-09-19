@@ -42,14 +42,15 @@ function createUndiciConnector(config = {}) {
         }
         const controller = new AbortController();
         pending.add(controller);
-        const abort = () => controller.abort(options.signal?.reason ?? config.signal?.reason);
         const signals = [...new Set([options.signal, config.signal].filter((s) => !!s))];
-        for (const signal of signals) {
+        const listeners = signals.map(signal => {
+            const abort = () => controller.abort(signal.reason);
             signal.addEventListener('abort', abort, { once: true });
             if (signal.aborted)
                 abort();
-        }
-        const cleanup = () => { pending.delete(controller); for (const signal of signals)
+            return { signal, abort };
+        });
+        const cleanup = () => { pending.delete(controller); for (const { signal, abort } of listeners)
             signal.removeEventListener('abort', abort); };
         const port = Number(options.port || (options.protocol === 'https:' ? 443 : 80));
         const settings = { ...config, hostname: options.hostname, port, localAddress: options.localAddress ?? config.localAddress, signal: controller.signal };

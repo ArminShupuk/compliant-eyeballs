@@ -16,6 +16,181 @@ function response(url, options) {
     request.on('error', reject);
   });
 }
+contract('Node HTTP Agent error API', 'single refusal matches native ClientRequest errors', async t => {
+  const server = http.createServer();
+  const { port } = await listen(t, server);
+  await new Promise(resolve => server.close(resolve));
+  const url = `http://127.0.0.1:${port}/`;
+  const native = await response(url, { agent: false }).catch(error => error);
+  const agent = createHttpAgent(); t.after(() => agent.destroy());
+  const replacement = await response(url, { agent }).catch(error => error);
+  for (const key of ['name', 'code', 'message']) assert.equal(replacement[key], native[key]);
+});
+contract('Node HTTPS Agent error API', 'untrusted certificate matches native ClientRequest errors', async t => {
+  const c = certs();
+  const server = https.createServer(c, (_request, result) => result.end());
+  server.on('tlsClientError', () => {});
+  const { port } = await listen(t, server);
+  const url = `https://127.0.0.1:${port}/`;
+  const native = await response(url, { agent: false }).catch(error => error);
+  const agent = createHttpsAgent(); t.after(() => agent.destroy());
+  const replacement = await response(url, { agent }).catch(error => error);
+  for (const key of ['name', 'code', 'message']) assert.equal(replacement[key], native[key]);
+});
+contract('Node HTTP Agent error API', 'remote reset matches native ClientRequest errors', async t => {
+  const { port } = await listen(t, http.createServer(request => request.socket.destroy()));
+  const url = `http://127.0.0.1:${port}/`;
+  const native = await response(url, { agent: false }).catch(error => error);
+  const agent = createHttpAgent(); t.after(() => agent.destroy());
+  const replacement = await response(url, { agent }).catch(error => error);
+  for (const key of ['name', 'code', 'message']) assert.equal(replacement[key], native[key]);
+});
+contract('Node HTTPS Agent error API', 'OpenSSL protocol errors match native ClientRequest errors', async t => {
+  const { port } = await listen(t, net.createServer(socket => socket.end('HTTP/1.1 200 OK\r\n\r\n')));
+  const url = `https://127.0.0.1:${port}/`;
+  const native = await response(url, { agent: false }).catch(error => error);
+  const agent = createHttpsAgent(); t.after(() => agent.destroy());
+  const replacement = await response(url, { agent }).catch(error => error);
+  for (const key of ['name', 'code', 'message', 'errno', 'syscall']) assert.equal(replacement[key], native[key]);
+  assert.match(replacement.cause?.code ?? '', /^ERR_SSL_/);
+});
+contract('Node HTTPS Agent error API', 'protocol errors retain TLS shape until a request queues a write', async t => {
+  const { port } = await listen(t, net.createServer(socket => socket.end('HTTP/1.1 200 OK\r\n\r\n')));
+  const url = `https://127.0.0.1:${port}/`;
+  for (const action of ['idle', 'flushHeaders', 'write', 'end']) {
+    const failure = agent => new Promise(resolve => {
+      const req = https.request(url, { agent });
+      req.once('error', resolve);
+      if (action === 'write') req.write('body');
+      else if (action !== 'idle') req[action]();
+    });
+    const agent = createHttpsAgent(); t.after(() => agent.destroy());
+    const expected = await failure(false), actual = await failure(agent);
+    for (const key of ['name', 'code', 'message', 'errno', 'syscall']) assert.equal(actual[key], expected[key], `${action}: ${key}`);
+  }
+  const agent = createHttpsAgent(); t.after(() => agent.destroy());
+  const error = await new Promise(resolve => agent.createConnection({ host: '127.0.0.1', port }, resolve));
+  assert.match(error.code, /^ERR_SSL_/);
+  assert.equal(error.syscall, undefined);
+});
+for (const module of [http, https]) contract('Node ClientRequest destroy and abort APIs', `${module === https ? 'HTTPS' : 'HTTP'} pending and queued cancellation preserves native errors`, async t => {
+  for (const queued of [false, true]) for (const action of ['destroyError', 'destroy', 'abort', 'signal']) {
+    const reason = Object.assign(new Error('caller stopped'), { name: 'AbortError', code: 'ABORT_ERR' });
+    const failure = async replacement => {
+      const options = { maxSockets: 1, lookup: () => {} };
+      const agent = replacement ? (module === https ? createHttpsAgent : createHttpAgent)(options) : new module.Agent(options);
+      t.after(() => agent.destroy());
+      const controller = new AbortController();
+      const url = `${module === https ? 'https' : 'http'}://fixture.test/`;
+      if (queued) module.get(url, { agent }).on('error', () => {});
+      const req = module.get(url, { agent, signal: controller.signal });
+      const errors = []; let closes = 0;
+      req.on('error', error => errors.push(error)).on('close', () => closes++);
+      const closed = new Promise(resolve => req.once('close', resolve));
+      if (action === 'destroyError') req.destroy(reason);
+      else if (action === 'signal') controller.abort(reason);
+      else req[action]();
+      // Native queued requests receive their socket before completing close.
+      if (queued && !replacement) agent.destroy();
+      await closed;
+      agent.destroy();
+      await delay(0);
+      assert.equal(closes, 1);
+      assert.equal(Object.hasOwn(req, 'destroy'), false);
+      if (replacement) {
+        assert.equal(agent.totalSocketCount, 0);
+        assert.equal(Object.keys(agent.requests).length, 0);
+      }
+      return errors;
+    };
+    const expected = await failure(false), actual = await failure(true);
+    assert.equal(actual.length, expected.length, `${action}, queued=${queued}`);
+    if (expected.length) {
+      for (const key of ['name', 'code', 'message', 'cause']) assert.equal(actual[0][key], expected[0][key]);
+      if (action === 'destroyError') assert.equal(actual[0], reason);
+    }
+  }
+});
+contract('Node HTTPS Agent error API', 'TLS version alerts match native ClientRequest errors', async t => {
+  const c = certs();
+  const server = https.createServer({ ...c, minVersion: 'TLSv1.3' }, (_request, result) => result.end());
+  server.on('tlsClientError', () => {});
+  const { port } = await listen(t, server);
+  const url = `https://127.0.0.1:${port}/`;
+  const options = { maxVersion: 'TLSv1.2', rejectUnauthorized: false };
+  const native = await response(url, { agent: false, ...options }).catch(error => error);
+  const agent = createHttpsAgent(options); t.after(() => agent.destroy());
+  const replacement = await response(url, { agent }).catch(error => error);
+  for (const key of ['name', 'code', 'message', 'errno', 'syscall']) assert.equal(replacement[key], native[key]);
+  assert.match(replacement.cause?.code ?? '', /^ERR_SSL_/);
+});
+contract('Node HTTPS Agent error API', 'custom verifier errors keep their original code', async t => {
+  const c = certs();
+  const { port } = await listen(t, https.createServer(c, (_request, result) => result.end()));
+  const url = `https://127.0.0.1:${port}/`;
+  const custom = Object.assign(new Error('fixture verifier rejected'), { code: 'ERR_SSL_CUSTOM' });
+  const options = { ca: c.ca, checkServerIdentity: () => custom };
+  const native = await response(url, { agent: false, ...options }).catch(error => error);
+  const agent = createHttpsAgent(options); t.after(() => agent.destroy());
+  const replacement = await response(url, { agent }).catch(error => error);
+  for (const key of ['name', 'code', 'message']) assert.equal(replacement[key], native[key]);
+});
+contract('Node HTTPS custom verifier API', 'numeric DOMException codes preserve the original error without throwing', async t => {
+  const c = certs();
+  const { port } = await listen(t, https.createServer(c, (_request, result) => result.end()));
+  const reason = new DOMException('custom verifier rejected', 'SecurityError');
+  const options = { ca: c.ca, checkServerIdentity: () => reason };
+  const url = `https://127.0.0.1:${port}/`;
+  const expected = await response(url, { agent: false, ...options }).catch(error => error);
+  const agent = createHttpsAgent(options); t.after(() => agent.destroy());
+  const actual = await response(url, { agent }).catch(error => error);
+  assert.equal(expected, reason);
+  assert.equal(actual, reason);
+});
+for (const module of [http, https]) contract('Node ClientRequest abort API', `${module === https ? 'HTTPS' : 'HTTP'} signal cancellation matches native error`, async t => {
+  const lookup = () => {};
+  const url = `${module === https ? 'https' : 'http'}://fixture.test/`;
+  const error = agent => {
+    const controller = new AbortController();
+    const request = module.get(url, { agent, lookup, signal: controller.signal });
+    const failed = new Promise(resolve => request.once('error', resolve));
+    queueMicrotask(() => controller.abort('fixture'));
+    return failed;
+  };
+  const native = await error(false);
+  const agent = module === https ? createHttpsAgent({ lookup }) : createHttpAgent({ lookup });
+  t.after(() => agent.destroy());
+  const replacement = await error(agent);
+  for (const key of ['name', 'code', 'message', 'cause']) assert.equal(replacement[key], native[key]);
+});
+for (const code of ['ENOTFOUND', 'EAI_AGAIN']) contract('Node HTTP Agent DNS error API', `${code} matches native ClientRequest errors`, async t => {
+  const lookup = (_hostname, _options, callback) => queueMicrotask(() => callback(Object.assign(new Error(`lookup ${code} fixture.test`), { code })));
+  const url = 'http://fixture.test/';
+  const native = await response(url, { agent: false, lookup }).catch(error => error);
+  const agent = createHttpAgent({ lookup }); t.after(() => agent.destroy());
+  const replacement = await response(url, { agent }).catch(error => error);
+  for (const key of ['name', 'code', 'message']) assert.equal(replacement[key], native[key]);
+});
+for (const module of [http, https]) contract('Node ClientRequest AbortSignal API', `${module === https ? 'HTTPS' : 'HTTP'} already-aborted requests settle without starting a race`, async t => {
+  const reason = new Error('already cancelled');
+  const signal = AbortSignal.abort(reason);
+  const url = `${module === https ? 'https' : 'http'}://fixture.test/`;
+  const native = await new Promise(resolve => module.get(url, { agent: false, signal, lookup: () => {} }).once('error', resolve));
+  let lookups = 0;
+  const events = [];
+  const options = { connection: { resolver: () => { lookups++; throw Error('cancelled request started DNS'); }, onDiagnostic: event => events.push(event) } };
+  const agent = (module === https ? createHttpsAgent : createHttpAgent)(options);
+  t.after(() => agent.destroy());
+  const request = module.get(url, { agent, signal });
+  const closed = new Promise(resolve => request.once('close', resolve));
+  const actual = await new Promise(resolve => request.once('error', resolve));
+  await closed;
+  for (const key of ['name', 'code', 'message', 'cause']) assert.equal(actual[key], native[key]);
+  assert.equal(lookups, 0);
+  assert.deepEqual(events, []);
+  assert.equal(agent.totalSocketCount, 0);
+  assert.equal(Object.hasOwn(request, 'destroy'), false);
+});
 contract('Node http.Agent and https.Agent APIs', 'native keep-alive reuse, pool limits, request hooks removed and no global patch', async t => {
   const originalDestroy = http.ClientRequest.prototype.destroy;
   let connections = 0, inFlight = 0, maximum = 0;
@@ -92,7 +267,7 @@ contract('Node http.Agent and https.Agent APIs', 'HTTPS preserves original IP id
   const c = certs(); const server = https.createServer(c.dns, (_req, res) => res.end('should reject'));
   server.on('tlsClientError', () => {}); const { port } = await listen(t, server);
   const agent = createHttpsAgent({ ca: c.ca }); t.after(() => agent.destroy());
-  await assert.rejects(response(`https://127.0.0.1:${port}/`, { agent, headers: { host: 'localhost' } }), e => e.errors[0].code === 'ERR_TLS_CERT_ALTNAME_INVALID');
+  await assert.rejects(response(`https://127.0.0.1:${port}/`, { agent, headers: { host: 'localhost' } }), { code: 'ERR_TLS_CERT_ALTNAME_INVALID' });
 });
 contract('Node http.Agent and https.Agent APIs', 'HTTPS forwards establishment inactivity timeout; notification alone does not destroy', async t => {
   const { port } = await listen(t, net.createServer());
