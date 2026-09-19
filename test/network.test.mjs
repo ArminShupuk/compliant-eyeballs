@@ -86,16 +86,16 @@ contract('Node TLS readiness and RFC 8305 §5 winner cleanup', 'faster TLS candi
     const timer = setTimeout(() => delayed.emit('connection', socket), 300);
     socket.once('close', () => clearTimeout(timer));
   });
-  const { sockets: slowSockets } = await listen(t, slow, '127.0.0.2', port);
+  const { sockets: slowSockets } = await listen(t, slow, '::1', port);
   const attempts = [];
   const winner = await connectTls({ hostname: 'localhost', port, attemptDelayMs: 50, minAttemptDelayMs: 10,
     tls: { ca: c.ca }, onDiagnostic: event => { if (event.type === 'attempt') attempts.push(event.candidate.address); },
     resolver: (_request, update) => {
-      update({ family: 6, addresses: [], complete: true });
-      update({ family: 4, addresses: ['127.0.0.2', '127.0.0.1'], complete: true });
+      update({ family: 6, addresses: ['::1'], complete: true });
+      update({ family: 4, addresses: ['127.0.0.1'], complete: true });
     },
   });
-  assert.deepEqual(attempts, ['127.0.0.2', '127.0.0.1']);
+  assert.deepEqual(attempts, ['::1', '127.0.0.1']);
   assert.equal(winner.remoteAddress, '127.0.0.1');
   assert.equal(slowSockets.size, 1);
   const closed = Promise.all([...slowSockets].map(socket => {

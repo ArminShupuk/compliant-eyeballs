@@ -2,6 +2,10 @@ name: connection-profile
 on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
+defaults:
+  run:
+    # npm 10.5.1's PowerShell launcher can select a missing global npm path.
+    shell: bash
 jobs:
   coverage:
     runs-on: ubuntu-latest

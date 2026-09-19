@@ -20,7 +20,7 @@ function run(executable, args, cwd) {
   return result.stdout;
 }
 try {
-  const report = JSON.parse(run(process.execPath, [npm, 'pack', '--json', '--pack-destination', directory], process.cwd()));
+  const report = JSON.parse(run(process.execPath, [npm, 'pack', '--json', '--foreground-scripts=false', '--pack-destination', directory], process.cwd()));
   const packed = Array.isArray(report) ? report[0] : report['compliant-eyeballs'];
   assert.ok(packed?.files, 'npm pack did not return a file list');
   run(process.execPath, [require.resolve('typescript/bin/tsc'), '--strict', '--noEmit', '--skipLibCheck', '--target', 'ES2022', '--module', 'NodeNext', '--moduleResolution', 'NodeNext', 'fixtures/types.mts'], process.cwd());

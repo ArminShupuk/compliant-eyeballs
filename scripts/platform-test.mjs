@@ -30,7 +30,10 @@ try {
     finally { closeSync(fd); }
     report.steps.push({ name, pass: result.status === 0, exitCode: result.status,
       elapsedMs: Math.round(performance.now() - start), log });
-    if (result.status !== 0) throw Error(`${name} failed; see ${log}${result.error ? ` (${result.error.code})` : ''}`);
+    if (result.status !== 0) {
+      console.error(readFileSync(join(directory, log), 'utf8'));
+      throw Error(`${name} failed; see ${log}${result.error ? ` (${result.error.code})` : ''}`);
+    }
   }
   report.matrix = JSON.parse(readFileSync(join(directory, 'matrix.json'), 'utf8'));
   if (report.coverageRequired) report.coverage = JSON.parse(readFileSync(join(directory, 'coverage.json'), 'utf8'));
