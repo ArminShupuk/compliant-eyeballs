@@ -15,7 +15,10 @@ export default async function* coverageReport(events) {
       const file = files.get(resolve('dist/esm', name));
       if (!file) throw Error(`Runtime module omitted from coverage: ${name}`);
       for (const metric of ['coveredLinePercent', 'coveredBranchPercent', 'coveredFunctionPercent']) {
-        if (file[metric] !== 100) throw Error(`${name}: ${metric} must be 100, received ${file[metric]}`);
+        if (file[metric] !== 100) {
+          const uncalled = file.functions.filter(fn => fn.count === 0).map(fn => `${fn.name || '<anonymous>'}:${fn.line}`);
+          throw Error(`${name}: ${metric} must be 100, received ${file[metric]}${uncalled.length ? `; uncalled functions: ${uncalled.join(', ')}` : ''}`);
+        }
       }
       return { path: relative(process.cwd(), file.path).replaceAll('\\', '/'),
         lines: file.coveredLinePercent, branches: file.coveredBranchPercent, functions: file.coveredFunctionPercent };

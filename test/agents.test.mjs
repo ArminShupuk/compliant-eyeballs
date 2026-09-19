@@ -62,6 +62,32 @@ contract('Node http.Agent and https.Agent APIs', 'failed race releases reservati
   await Promise.all(requests.map(req => new Promise(resolve => req.once('error', resolve))));
   assert.equal(agent.totalSocketCount, 0); assert.equal(Object.keys(agent.requests).length, 0); agent.destroy();
 });
+contract('Node https.Agent and TLS socket lifecycle APIs', 'failed TLS candidate closes before fallback serves queued requests', async t => {
+  const c = certs();
+  const { port } = await listen(t, https.createServer(c, (_req, res) => res.end('fallback')));
+  let rejectedConnections = 0;
+  await listen(t, net.createServer(socket => { rejectedConnections++; socket.end('invalid TLS'); }), '::1', port);
+  const attempts = [], failures = [];
+  const agent = createHttpsAgent({ ca: c.ca, keepAlive: true, maxSockets: 1, connection: {
+    attemptDelayMs: 50, minAttemptDelayMs: 10,
+    resolver: (_request, update) => {
+      update({ family: 6, addresses: ['::1'], complete: true });
+      update({ family: 4, addresses: ['127.0.0.1'], complete: true });
+    },
+    onDiagnostic: event => {
+      if (event.type === 'attempt') attempts.push(event.candidate.family);
+      if (event.type === 'failure') failures.push(event.candidate.family);
+    },
+  } });
+  t.after(() => agent.destroy());
+  const results = await Promise.all([response(`https://localhost:${port}/`, { agent }), response(`https://localhost:${port}/`, { agent })]);
+  assert.deepEqual(results.map(result => result.body), ['fallback', 'fallback']);
+  assert.deepEqual(attempts, [6, 4]); assert.deepEqual(failures, [6]);
+  assert.equal(rejectedConnections, 1);
+  assert.equal(results[0].request.socket, results[1].request.socket);
+  assert.equal(Object.keys(agent.requests).length, 0);
+  assert.equal(agent.totalSocketCount, 1);
+});
 contract('Node http.Agent and https.Agent APIs', 'HTTPS preserves original IP identity, including overridden Host header', async t => {
   const c = certs(); const server = https.createServer(c.dns, (_req, res) => res.end('should reject'));
   server.on('tlsClientError', () => {}); const { port } = await listen(t, server);
